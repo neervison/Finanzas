@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#5b21b6">
+<title>Mis Pagos — Recordatorio de tarjetas y cuentas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     MIS PAGOS v3 — Recordatorio de tarjetas y cuentas
+     Un solo archivo. Datos en este teléfono (localStorage).
+     Vistas: General (panel) · Pagos · Gastos, con menú ☰ lateral.
+     ============================================================ */
+  :root{
+    --fondo:#eef0f8; --tarjeta:#ffffff; --texto:#191b29; --suave:#6b7086;
+    --violeta:#6d28d9; --morado:#5b21b6; --rosado:#db2777;
+    --verde:#16a34a; --ambar:#d97706; --rojo:#dc2626; --celeste:#0284c7;
+    --sombra:0 10px 30px rgba(25,27,41,.09);
+    --sombra-suave:0 4px 14px rgba(25,27,41,.06);
+    --radio:22px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  body{margin:0; font-family:'Inter','Segoe UI',system-ui,-apple-system,Roboto,sans-serif; background:var(--fondo); color:var(--texto); padding-bottom:110px}
+  main{padding:0 16px; max-width:640px; margin:0 auto}
+  button{font-family:inherit}
+
+  /* ---------- Barra superior ---------- */
+  .barra{position:sticky; top:0; z-index:30; display:flex; align-items:center; gap:12px;
+    padding:12px 16px; background:rgba(255,255,255,.92); backdrop-filter:blur(10px);
+    box-shadow:0 2px 14px rgba(25,27,41,.07)}
+  .barra .btn-menu{width:42px; height:42px; border:none; border-radius:13px; cursor:pointer;
+    background:linear-gradient(135deg,var(--violeta),var(--rosado)); color:#fff; font-size:19px; line-height:1}
+  .barra .titulo{font-size:19px; font-weight:900; letter-spacing:-.3px}
+  .barra .titulo small{display:block; font-size:11.5px; font-weight:600; color:var(--suave); letter-spacing:0}
+  .barra .version{margin-left:auto; font-size:11px; font-weight:800; color:var(--violeta); background:#ede9fe; padding:5px 10px; border-radius:99px}
+  .barra .nube{font-size:11px; font-weight:800; padding:5px 10px; border-radius:99px; background:#f1f2f8; color:var(--suave); white-space:nowrap}
+  .barra .nube.ok{background:#dcfce7; color:#15803d}
+
+  /* ---------- Menú hamburguesa (lateral) ---------- */
+  .drawer-fondo{display:none; position:fixed; inset:0; background:rgba(18,14,38,.55); z-index:60}
+  .drawer-fondo.visible{display:block}
+  .drawer{position:fixed; top:0; left:0; bottom:0; width:284px; max-width:84vw; z-index:61; background:#fff;
+    transform:translateX(-105%); transition:transform .32s cubic-bezier(.2,.8,.25,1); display:flex; flex-direction:column;
+    box-shadow:20px 0 50px rgba(18,14,38,.25)}
+  .drawer.visible{transform:translateX(0)}
+  .drawer .cabecera{background:linear-gradient(135deg,var(--morado),var(--violeta) 55%,var(--rosado)); color:#fff; padding:26px 20px 20px}
+  .drawer .cabecera .logo{font-size:34px}
+  .drawer .cabecera h2{margin:6px 0 2px; font-size:21px; font-weight:900}
+  .drawer .cabecera p{margin:0; font-size:12.5px; opacity:.85}
+  .drawer nav{padding:12px; display:flex; flex-direction:column; gap:4px}
+  .drawer nav button{display:flex; align-items:center; gap:13px; border:none; background:none; cursor:pointer;
+    padding:13px 14px; border-radius:14px; font-size:15px; font-weight:700; color:var(--texto); text-align:left}
+  .drawer nav button .ico{font-size:19px; width:26px; text-align:center}
+  .drawer nav button.activo{background:#ede9fe; color:var(--morado)}
+  .drawer .separador{height:1px; background:#eceef6; margin:8px 14px}
+  .drawer .pie{margin-top:auto; padding:16px 20px; font-size:12px; color:var(--suave); border-top:1px solid #eceef6}
+
+  /* ---------- Vista general ---------- */
+  .hero{margin-top:16px; border-radius:26px; color:#fff; padding:22px; position:relative; overflow:hidden;
+    background:linear-gradient(130deg,#4c1d95 0%,#7c3aed 52%,#db2777 115%); box-shadow:0 18px 38px rgba(109,40,217,.35)}
+  .hero::after{content:''; position:absolute; width:230px; height:230px; border-radius:50%;
+    background:rgba(255,255,255,.10); right:-70px; top:-80px}
+  .hero .mes{font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1.2px; opacity:.85}
+  .hero .fila{display:flex; align-items:center; gap:18px; margin-top:8px; position:relative; z-index:1}
+  .hero .monto{font-size:34px; font-weight:900; letter-spacing:-.5px}
+  .hero .detalle{font-size:13px; opacity:.92; margin-top:3px}
+  .hero .cta{margin-top:16px; position:relative; z-index:1; background:#fff; color:var(--morado); border:none;
+    padding:11px 18px; border-radius:99px; font-weight:800; font-size:14px; cursor:pointer}
+  .anillo{margin-left:auto; text-align:center}
+  .anillo svg{transform:rotate(-90deg)}
+  .anillo .pct{font-size:15px; font-weight:900; margin-top:-47px; position:relative}
+  .anillo .lbl{font-size:10.5px; opacity:.85; margin-top:22px}
+
+  .stats{display:flex; gap:10px; margin-top:14px}
+  .stat{flex:1; background:#fff; border-radius:18px; box-shadow:var(--sombra-suave); padding:14px 12px; text-align:center}
+  .stat .ico{font-size:21px}
+  .stat .val{font-size:16.5px; font-weight:900; margin-top:5px}
+  .stat .lbl{font-size:11px; color:var(--suave); font-weight:700; margin-top:2px}
+
+  .seccion{display:flex; align-items:center; margin:24px 2px 4px}
+  .seccion h3{margin:0; font-size:16.5px; font-weight:900}
+  .seccion button{margin-left:auto; border:none; background:none; color:var(--violeta); font-weight:800; font-size:13px; cursor:pointer}
+  .mini{background:#fff; border-radius:18px; box-shadow:var(--sombra-suave); padding:10px 14px; margin-top:10px;
+    display:flex; align-items:center; gap:12px}
+  .mini .icono{width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px;
+    background:color-mix(in srgb, var(--color,#6d28d9) 12%, #fff)}
+  .mini .info{flex:1; min-width:0}
+  .mini .nombre{font-weight:800; font-size:14.5px}
+  .mini .cuando{font-size:12px; color:var(--suave)}
+  .mini .monto{font-weight:900; font-size:15px; white-space:nowrap}
+  .vacio-seccion{background:#fff; border-radius:18px; box-shadow:var(--sombra-suave); padding:18px; margin-top:10px;
+    text-align:center; color:var(--suave); font-size:14px}
+  .barras{background:#fff; border-radius:18px; box-shadow:var(--sombra-suave); padding:16px; margin-top:10px}
+  .barra-cat{margin-top:12px}
+  .barra-cat:first-child{margin-top:2px}
+  .barra-cat .top{display:flex; font-size:13.5px; font-weight:700}
+  .barra-cat .top .v{margin-left:auto; font-weight:900}
+  .barra-cat .track{height:9px; background:#eef0f8; border-radius:99px; margin-top:6px; overflow:hidden}
+  .barra-cat .fill{height:100%; border-radius:99px; background:linear-gradient(90deg,var(--violeta),var(--rosado))}
+
+  /* ---------- Alerta ---------- */
+  .alerta{display:none; margin-top:14px; background:#fff7ed; border:1.5px solid #fdba74; color:#9a3412;
+    border-radius:18px; padding:13px 15px; font-size:14px; font-weight:700}
+  .alerta.visible{display:block}
+
+  /* ---------- Filtros (vista Pagos) ---------- */
+  .titulo-vista{font-size:20px; font-weight:900; margin:20px 2px 2px}
+  .subtitulo-vista{font-size:13px; color:var(--suave); margin:0 2px}
+  .filtros{display:flex; gap:8px; margin:14px 0 6px}
+  .filtros button{flex:1; border:1.5px solid #e3e5f0; background:#fff; color:var(--suave);
+    padding:9px 0; border-radius:99px; font-size:14px; font-weight:700; cursor:pointer}
+  .filtros button.activo{background:var(--violeta); border-color:var(--violeta); color:#fff}
+
+  /* ---------- Tarjeta de pago/gasto ---------- */
+  .pago{background:var(--tarjeta); border-radius:var(--radio); box-shadow:var(--sombra-suave);
+    padding:16px; margin-top:12px; display:flex; gap:14px; align-items:flex-start; position:relative; overflow:hidden}
+  .pago::before{content:''; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--color,#6d28d9)}
+  .pago .icono{width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+    font-size:24px; background:color-mix(in srgb, var(--color,#6d28d9) 12%, #fff)}
+  .pago .info{flex:1; min-width:0}
+  .pago .nombre{font-weight:800; font-size:16px}
+  .pago .cuando{font-size:13px; color:var(--suave); margin-top:2px}
+  .pago .monto{font-size:19px; font-weight:800; white-space:nowrap}
+  .pago .lado{display:flex; flex-direction:column; align-items:flex-end; gap:6px}
+  .chip{font-size:11.5px; font-weight:800; padding:4px 10px; border-radius:99px; white-space:nowrap}
+  .chip.vencido,.chip.hoy{background:#fee2e2; color:var(--rojo)}
+  .chip.pronto{background:#fef3c7; color:var(--ambar)}
+  .chip.ok{background:#e0e7ff; color:#4338ca}
+  .chip.pagado{background:#dcfce7; color:var(--verde)}
+  .acciones{display:flex; gap:6px; margin-top:10px}
+  .acciones button{border:none; cursor:pointer; border-radius:10px; padding:8px 12px; font-size:13px; font-weight:700}
+  .btn-pague{background:var(--verde); color:#fff}
+  .btn-pague:disabled{background:#bbf7d0; color:#166534; cursor:default}
+  .btn-chico{background:#f1f2f8; color:var(--suave); border:none; cursor:pointer; border-radius:10px; padding:8px 11px; font-size:13px}
+
+  .vacio{text-align:center; padding:40px 20px; color:var(--suave)}
+  .vacio .grande{font-size:54px}
+  .vacio button{margin-top:12px; background:none; border:none; color:var(--violeta); font-weight:800; font-size:14px; cursor:pointer}
+
+  /* ---------- Gastos ---------- */
+  .gasto-resumen{background:#fff; border-radius:var(--radio); box-shadow:var(--sombra-suave); padding:18px; margin-top:12px}
+  .gasto-resumen .total{font-size:27px; font-weight:900}
+  .gasto-resumen .detalle{font-size:13px; color:var(--suave); margin-top:2px}
+  .mes-nav{display:flex; align-items:center; justify-content:space-between; margin-top:14px}
+  .mes-nav button{width:38px; height:38px; border-radius:50%; border:1.5px solid #e3e5f0; background:#fff; font-size:17px; cursor:pointer; color:var(--texto)}
+  .mes-nav button:disabled{opacity:.35; cursor:default}
+  .mes-nav .mes-label{font-weight:800; font-size:15px; text-transform:capitalize}
+  .cat-chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
+  .cat-chips .cat{background:#f1f2f8; border-radius:99px; padding:6px 12px; font-size:12.5px; font-weight:700}
+
+  /* ---------- Botón flotante ---------- */
+  .fab{position:fixed; right:18px; bottom:22px; width:62px; height:62px; border-radius:50%; border:none;
+    background:linear-gradient(135deg,var(--violeta),var(--rosado)); color:#fff; font-size:31px; cursor:pointer;
+    box-shadow:0 14px 30px rgba(109,40,217,.45); z-index:40}
+
+  /* ---------- Hojas inferiores (formularios) ---------- */
+  .fondo-modal{display:none; position:fixed; inset:0; background:rgba(20,16,40,.5); z-index:50}
+  .fondo-modal.visible{display:block}
+  .hoja{position:fixed; left:0; right:0; bottom:0; z-index:51; background:#fff; border-radius:26px 26px 0 0;
+    padding:22px 20px 30px; max-width:640px; margin:0 auto; transform:translateY(105%); transition:transform .3s; max-height:92vh; overflow:auto}
+  .hoja.visible{transform:translateY(0)}
+  .hoja h2{margin:0 0 14px; font-size:19px; font-weight:900}
+  .hoja label{display:block; font-size:13px; font-weight:700; color:var(--suave); margin:14px 0 6px}
+  .hoja input,.hoja select{width:100%; padding:12px 14px; border:1.5px solid #e3e5f0; border-radius:12px; font-size:16px; background:#fbfbfe; font-family:inherit}
+  .colores{display:flex; gap:10px; flex-wrap:wrap}
+  .colores .color{width:38px; height:38px; border-radius:50%; border:3px solid transparent; cursor:pointer}
+  .colores .color.elegido{border-color:#1c1e2a}
+  .hoja .guardar{width:100%; margin-top:22px; background:linear-gradient(135deg,var(--violeta),var(--rosado));
+    color:#fff; border:none; padding:15px; border-radius:14px; font-size:16px; font-weight:800; cursor:pointer}
+  .hoja .cancelar{width:100%; margin-top:8px; background:none; border:none; padding:10px; font-size:14px; font-weight:700; color:var(--suave); cursor:pointer}
+  .rapidos{display:flex; gap:8px; flex-wrap:wrap}
+  .rapidos button{border:1.5px solid #e3e5f0; background:#fbfbfe; border-radius:99px; padding:8px 13px; font-size:13.5px; font-weight:700; cursor:pointer; color:var(--texto)}
+  .accion-btn{width:100%; display:flex; align-items:center; gap:14px; border:1.5px solid #e3e5f0; background:#fbfbfe;
+    border-radius:16px; padding:16px; margin-top:10px; font-size:16px; font-weight:800; cursor:pointer; color:var(--texto); text-align:left}
+  .accion-btn .ico{font-size:24px}
+  .accion-btn small{display:block; font-size:12.5px; font-weight:600; color:var(--suave)}
+</style>
+</head>
+<body>
+
+<!-- Barra superior -->
+<div class="barra">
+  <button class="btn-menu" id="btn-menu" title="Menú">☰</button>
+  <div class="titulo">Mis Pagos<small id="barra-subtitulo">Vista general</small></div>
+  <div class="version">v4</div>
+  <div class="nube" id="nube-estado">📱 Local</div>
+</div>
+
+<!-- Menú hamburguesa -->
+<div class="drawer-fondo" id="drawer-fondo"></div>
+<aside class="drawer" id="drawer">
+  <div class="cabecera">
+    <div class="logo">💳</div>
+    <h2>Mis Pagos</h2>
+    <p>Tus tarjetas, cuentas y gastos en un solo lugar</p>
+  </div>
+  <nav>
+    <button data-vista="general" class="activo"><span class="ico">🏠</span> Vista general</button>
+    <button data-vista="pagos"><span class="ico">🧾</span> Pagos</button>
+    <button data-vista="gastos"><span class="ico">💸</span> Gastos del mes</button>
+    <div class="separador"></div>
+    <button id="nav-exportar"><span class="ico">⬇️</span> Respaldar datos</button>
+    <button id="nav-importar"><span class="ico">⬆️</span> Restaurar respaldo</button>
+  </nav>
+  <div class="pie">Tus datos quedan guardados en este teléfono. Baja un respaldo de vez en cuando.</div>
+</aside>
+<input type="file" id="archivo-importar" accept=".json" style="display:none">
+
+<main>
+  <!-- ============ VISTA GENERAL ============ -->
+  <section id="vista-general">
+    <div class="alerta" id="alerta-general"></div>
+    <div class="hero">
+      <div class="mes" id="g-mes">Este mes</div>
+      <div class="fila">
+        <div>
+          <div class="detalle">Te falta por pagar</div>
+          <div class="monto" id="g-total-pagar">$0</div>
+          <div class="detalle" id="g-pendientes-detalle">Sin pagos pendientes</div>
+        </div>
+        <div class="anillo">
+          <svg width="86" height="86" viewBox="0 0 86 86">
+            <circle cx="43" cy="43" r="36" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="9"/>
+            <circle id="g-anillo" cx="43" cy="43" r="36" fill="none" stroke="#fff" stroke-width="9"
+              stroke-linecap="round" stroke-dasharray="226.2" stroke-dashoffset="226.2"/>
+          </svg>
+          <div class="pct" id="g-pct">0%</div>
+          <div class="lbl">pagado</div>
+        </div>
+      </div>
+      <button class="cta" data-ir="pagos">Ver mis pagos →</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="ico">💸</div><div class="val" id="g-stat-gastos">$0</div><div class="lbl">Gastos del mes</div></div>
+      <div class="stat"><div class="ico">✅</div><div class="val" id="g-stat-pagados">$0</div><div class="lbl">Ya pagado</div></div>
+      <div class="stat"><div class="ico">⚠️</div><div class="val" id="g-stat-vencidos">0</div><div class="lbl">Vencidos</div></div>
+    </div>
+
+    <div class="seccion"><h3>⏰ Próximos vencimientos</h3><button data-ir="pagos">Ver todos</button></div>
+    <div id="g-proximos"></div>
+
+    <div class="seccion"><h3>📊 Gastos por categoría</h3><button data-ir="gastos">Ver gastos</button></div>
+    <div id="g-categorias"></div>
+
+    <div class="seccion"><h3>🧾 Últimos gastos</h3><button data-ir="gastos">Ver todos</button></div>
+    <div id="g-ultimos"></div>
+  </section>
+
+  <!-- ============ VISTA PAGOS ============ -->
+  <section id="vista-pagos" style="display:none">
+    <h2 class="titulo-vista">🧾 Pagos</h2>
+    <p class="subtitulo-vista">Tus tarjetas, servicios y cuentas de cada mes</p>
+    <div class="alerta" id="alerta-pagos"></div>
+    <div class="filtros">
+      <button id="filtro-todos" class="activo">Todos</button>
+      <button id="filtro-pendientes">Por pagar</button>
+      <button id="filtro-pagados">Pagados</button>
+    </div>
+    <div id="lista"></div>
+    <div class="vacio" id="vacio" style="display:none">
+      <div class="grande">🗓️</div>
+      <p><strong>Aún no agregas ningún pago.</strong><br>Toca el botón + y agrega tu primera tarjeta o cuenta.</p>
+      <button id="btn-ejemplos">Cargar ejemplos para ver cómo se ve</button>
+    </div>
+  </section>
+
+  <!-- ============ VISTA GASTOS ============ -->
+  <section id="vista-gastos" style="display:none">
+    <h2 class="titulo-vista">💸 Gastos del mes</h2>
+    <p class="subtitulo-vista">Lo que vas gastando, anotado al momento</p>
+    <div class="mes-nav">
+      <button id="gasto-mes-prev">‹</button>
+      <div class="mes-label" id="gasto-mes-label"></div>
+      <button id="gasto-mes-next">›</button>
+    </div>
+    <div class="gasto-resumen">
+      <div class="total" id="gasto-total">$0</div>
+      <div class="detalle" id="gasto-detalle">Sin gastos este mes</div>
+      <div class="cat-chips" id="gasto-categorias"></div>
+    </div>
+    <div id="lista-gastos"></div>
+    <div class="vacio" id="vacio-gastos" style="display:none">
+      <div class="grande">💸</div>
+      <p><strong>Sin gastos registrados este mes.</strong><br>Toca el botón + para anotar el primero.</p>
+    </div>
+  </section>
+</main>
+
+<button class="fab" id="btn-agregar" title="Agregar">+</button>
+
+<!-- Hoja: elegir qué agregar (desde Vista general) -->
+<div class="fondo-modal" id="fondo-modal"></div>
+<div class="hoja" id="hoja-accion">
+  <h2>¿Qué quieres agregar?</h2>
+  <button class="accion-btn" id="accion-pago"><span class="ico">🧾</span><span>Un pago<small>Tarjeta, servicio o cuenta de cada mes</small></span></button>
+  <button class="accion-btn" id="accion-gasto"><span class="ico">💸</span><span>Un gasto<small>Algo que gastaste hoy o este mes</small></span></button>
+  <button class="cancelar" id="btn-cancelar-accion">Cancelar</button>
+</div>
+
+<!-- Hoja: formulario de pago -->
+<div class="hoja" id="hoja">
+  <h2 id="titulo-formulario">Agregar pago</h2>
+  <label style="margin-top:0">Agregar rápido: servicios y cuentas</label>
+  <div class="rapidos" id="rapidos">
+    <button type="button" data-tipo="tarjeta" data-nombre="Tarjeta de crédito">💳 Tarjeta</button>
+    <button type="button" data-tipo="luz" data-nombre="Luz">💡 Luz</button>
+    <button type="button" data-tipo="agua" data-nombre="Agua">💧 Agua</button>
+    <button type="button" data-tipo="gas" data-nombre="Gas">🔥 Gas</button>
+    <button type="button" data-tipo="internet" data-nombre="Internet">📶 Internet</button>
+    <button type="button" data-tipo="celular" data-nombre="Celular">📱 Celular</button>
+    <button type="button" data-tipo="arriendo" data-nombre="Arriendo">🏠 Arriendo</button>
+    <button type="button" data-tipo="suscripcion" data-nombre="Suscripción">🎬 Suscripción</button>
+  </div>
+  <label>Nombre</label>
+  <input id="campo-nombre" type="text" placeholder="Ej: Visa Santander">
+  <label>Tipo</label>
+  <select id="campo-tipo">
+    <option value="tarjeta">💳 Tarjeta de crédito</option>
+    <option value="luz">💡 Luz</option>
+    <option value="agua">💧 Agua</option>
+    <option value="gas">🔥 Gas</option>
+    <option value="internet">📶 Internet</option>
+    <option value="celular">📱 Celular</option>
+    <option value="arriendo">🏠 Arriendo</option>
+    <option value="suscripcion">🎬 Suscripción</option>
+    <option value="otro">🧾 Otro</option>
+  </select>
+  <label>Día de pago de cada mes</label>
+  <input id="campo-dia" type="number" min="1" max="31" placeholder="Ej: 21">
+  <label>Monto habitual ($)</label>
+  <input id="campo-monto" type="number" min="0" step="100" placeholder="Ej: 85000">
+  <label>Color</label>
+  <div class="colores" id="campo-colores"></div>
+  <button class="guardar" id="btn-guardar">Guardar</button>
+  <button class="cancelar" id="btn-cancelar">Cancelar</button>
+</div>
+
+<!-- Hoja: formulario de gasto -->
+<div class="hoja" id="hoja-gasto">
+  <h2>Agregar gasto</h2>
+  <label>¿En qué gastaste?</label>
+  <input id="campo-g-desc" type="text" placeholder="Ej: Almuerzo, bencina, mercadería">
+  <label>Monto ($)</label>
+  <input id="campo-g-monto" type="number" min="0" step="100" placeholder="Ej: 8500">
+  <label>Categoría</label>
+  <select id="campo-g-categoria">
+    <option value="comida">🍔 Comida</option>
+    <option value="supermercado">🛒 Supermercado</option>
+    <option value="transporte">🚌 Transporte</option>
+    <option value="local">🏪 Local / negocio</option>
+    <option value="salud">💊 Salud</option>
+    <option value="ocio">🎉 Ocio</option>
+    <option value="ropa">👕 Ropa</option>
+    <option value="otro">📦 Otro</option>
+  </select>
+  <label>Fecha</label>
+  <input id="campo-g-fecha" type="date">
+  <button class="guardar" id="btn-guardar-gasto">Guardar gasto</button>
+  <button class="cancelar" id="btn-cancelar-gasto">Cancelar</button>
+</div>
+
+<script>
+/* ============================================================
+   MIS PAGOS v3 — lógica
+   Pago:  { id, nombre, tipo, dia (1-31), monto, color, pagadoClave }
+   Gasto: { id, desc, monto, categoria, fecha 'AAAA-MM-DD' }
+   pagadoClave = periodo "AAAA-MM" del vencimiento ya pagado.
+   ============================================================ */
+const CLAVE_PAGOS = 'mispagos_v1';
+const CLAVE_GASTOS = 'mispagos_gastos_v1';
+let pagos = cargarPagos();
+let gastos = cargarGastos();
+let filtro = 'todos';
+let editandoId = null;
+let colorElegido = '#6d28d9';
+let vistaActual = 'general';     // general | pagos | gastos
+let mesVer = claveMesActual();
+
+const COLORES = ['#6d28d9','#2563eb','#059669','#dc2626','#ea580c','#db2777','#0891b2','#111827'];
+const ICONOS = { tarjeta:'💳', luz:'💡', agua:'💧', gas:'🔥', internet:'📶', celular:'📱', arriendo:'🏠', suscripcion:'🎬', otro:'🧾' };
+const G_ICONOS = { comida:'🍔', supermercado:'🛒', transporte:'🚌', local:'🏪', salud:'💊', ocio:'🎉', ropa:'👕', otro:'📦' };
+const G_NOMBRES = { comida:'Comida', supermercado:'Supermercado', transporte:'Transporte', local:'Local / negocio', salud:'Salud', ocio:'Ocio', ropa:'Ropa', otro:'Otro' };
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const SUBTITULOS = { general:'Vista general', pagos:'Pagos', gastos:'Gastos del mes' };
+
+/* ---------- Utilidades ---------- */
+function cargarPagos(){ try{ return JSON.parse(localStorage.getItem(CLAVE_PAGOS)) || []; }catch(e){ return []; } }
+function cargarGastos(){ try{ return JSON.parse(localStorage.getItem(CLAVE_GASTOS)) || []; }catch(e){ return []; } }
+function guardarPagos(){ localStorage.setItem(CLAVE_PAGOS, JSON.stringify(pagos)); programarSync(); }
+function guardarGastos(){ localStorage.setItem(CLAVE_GASTOS, JSON.stringify(gastos)); programarSync(); }
+function plata(n){ return '$' + Math.round(n||0).toLocaleString('es-CL'); }
+function escapar(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function hoyDia(){ const h = new Date(); h.setHours(0,0,0,0); return h; }
+function diffDias(a, b){ return Math.round((b - a) / 86400000); }
+function fechaCorta(f){ return f.getDate() + ' de ' + MESES[f.getMonth()]; }
+function claveMesActual(){ const h = new Date(); return h.getFullYear() + '-' + String(h.getMonth()+1).padStart(2,'0'); }
+function moverMes(clave, delta){
+  let [y, m] = clave.split('-').map(Number);
+  m += delta;
+  while (m < 1){ m += 12; y--; }
+  while (m > 12){ m -= 12; y++; }
+  return y + '-' + String(m).padStart(2,'0');
+}
+function nombreMes(clave){ const [y, m] = clave.split('-').map(Number); return MESES[m-1] + ' ' + y; }
+
+/* ---------- Motor de fechas de pagos ---------- */
+function vencimientoEn(pago, base){
+  const y = base.getFullYear(), m = base.getMonth();
+  const ultimo = new Date(y, m + 1, 0).getDate();
+  return new Date(y, m, Math.min(pago.dia, ultimo));
+}
+function claveDe(fecha){ return fecha.getFullYear() + '-' + String(fecha.getMonth()+1).padStart(2,'0'); }
+function estadoDe(pago){
+  const hoy = hoyDia();
+  const vence = vencimientoEn(pago, hoy);
+  if (pago.pagadoClave === claveDe(vence)){
+    const primeroDelSiguiente = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 1);
+    const venceSiguiente = vencimientoEn(pago, primeroDelSiguiente);
+    return { estado:'pagado', vence:venceSiguiente, dias:diffDias(hoy, venceSiguiente) };
+  }
+  const dias = diffDias(hoy, vence);
+  let estado = 'ok';
+  if (dias < 0) estado = 'vencido';
+  else if (dias === 0) estado = 'hoy';
+  else if (dias <= 3) estado = 'pronto';
+  return { estado, vence, dias };
+}
+function textoChip(e){
+  if (e.estado === 'pagado') return '✓ Pagado';
+  if (e.estado === 'vencido') return '¡Venció hace ' + Math.abs(e.dias) + (Math.abs(e.dias)===1?' día!':' días!');
+  if (e.estado === 'hoy') return '¡Vence hoy!';
+  if (e.dias === 1) return 'Vence mañana';
+  return 'En ' + e.dias + ' días';
+}
+function pagosConEstado(){
+  const peso = { vencido:0, hoy:1, pronto:2, ok:3, pagado:4 };
+  return pagos.map(p => ({ pago:p, e:estadoDe(p) }))
+    .sort((a,b) => (peso[a.e.estado]-peso[b.e.estado]) || (a.e.dias - b.e.dias));
+}
+
+/* ---------- Alertas (se muestran en General y en Pagos) ---------- */
+function pintarAlertas(pendientes){
+  const vencidos = pendientes.filter(x => x.e.estado === 'vencido' || x.e.estado === 'hoy').length;
+  const prontos = pendientes.filter(x => x.e.estado === 'pronto').length;
+  let txt = '';
+  if (vencidos + prontos > 0){
+    txt = '⚠️ ';
+    if (vencidos) txt += 'Tienes ' + vencidos + (vencidos===1 ? ' pago vencido' : ' pagos vencidos') + '. ';
+    if (prontos) txt += prontos + (prontos===1 ? ' vence' : ' vencen') + ' en los próximos 3 días.';
+  }
+  ['alerta-general','alerta-pagos'].forEach(id => {
+    const el = document.getElementById(id);
+    el.textContent = txt;
+    el.classList.toggle('visible', !!txt);
+  });
+}
+
+/* ---------- VISTA GENERAL ---------- */
+function renderGeneral(){
+  const conEstado = pagosConEstado();
+  const pendientes = conEstado.filter(x => x.e.estado !== 'pagado');
+  const pagados = conEstado.filter(x => x.e.estado === 'pagado');
+  const mes = claveMesActual();
+  const gastosMes = gastos.filter(g => g.fecha.slice(0,7) === mes);
+
+  document.getElementById('g-mes').textContent = 'Resumen de ' + nombreMes(mes);
+  document.getElementById('g-total-pagar').textContent = plata(pendientes.reduce((s,x) => s + (x.pago.monto||0), 0));
+  document.getElementById('g-pendientes-detalle').textContent =
+    pendientes.length === 0 ? 'Nada pendiente 🎉' : pendientes.length + (pendientes.length===1 ? ' pago pendiente' : ' pagos pendientes');
+  const pct = conEstado.length ? Math.round(pagados.length / conEstado.length * 100) : 0;
+  document.getElementById('g-pct').textContent = pct + '%';
+  document.getElementById('g-anillo').style.strokeDashoffset = (226.2 * (1 - pct/100)).toFixed(1);
+  document.getElementById('g-stat-gastos').textContent = plata(gastosMes.reduce((s,g) => s + (g.monto||0), 0));
+  document.getElementById('g-stat-pagados').textContent = plata(pagados.reduce((s,x) => s + (x.pago.monto||0), 0));
+  document.getElementById('g-stat-vencidos').textContent = pendientes.filter(x => x.e.estado === 'vencido' || x.e.estado === 'hoy').length;
+  pintarAlertas(pendientes);
+
+  // Próximos vencimientos: los 4 más urgentes
+  const prox = pendientes.slice(0, 4);
+  document.getElementById('g-proximos').innerHTML = prox.length ? prox.map(({pago:p, e}) => `
+    <div class="mini" style="--color:${p.color}">
+      <div class="icono">${ICONOS[p.tipo] || '🧾'}</div>
+      <div class="info"><div class="nombre">${escapar(p.nombre)}</div>
+      <div class="cuando">Vence el ${fechaCorta(e.vence)}</div></div>
+      <div style="text-align:right"><div class="monto">${plata(p.monto)}</div>
+      <div class="chip ${e.estado}" style="margin-top:4px; display:inline-block">${textoChip(e)}</div></div>
+    </div>`).join('')
+    : '<div class="vacio-seccion">No tienes vencimientos pendientes 🎉</div>';
+
+  // Gastos por categoría del mes: barras proporcionales
+  const porCat = {};
+  gastosMes.forEach(g => { porCat[g.categoria] = (porCat[g.categoria]||0) + (g.monto||0); });
+  const cats = Object.entries(porCat).sort((a,b) => b[1]-a[1]).slice(0, 4);
+  const maxCat = cats.length ? cats[0][1] : 0;
+  document.getElementById('g-categorias').innerHTML = cats.length ? '<div class="barras">' + cats.map(([c,v]) => `
+    <div class="barra-cat"><div class="top"><span>${G_ICONOS[c]||'📦'} ${G_NOMBRES[c]||c}</span><span class="v">${plata(v)}</span></div>
+    <div class="track"><div class="fill" style="width:${Math.max(6, Math.round(v/maxCat*100))}%"></div></div></div>`).join('') + '</div>'
+    : '<div class="vacio-seccion">Aún no anotas gastos este mes</div>';
+
+  // Últimos gastos (los 4 más recientes)
+  const ultimos = [...gastos].sort((a,b) => (b.fecha + b.id).localeCompare(a.fecha + a.id)).slice(0, 4);
+  document.getElementById('g-ultimos').innerHTML = ultimos.length ? ultimos.map(g => `
+    <div class="mini" style="--color:#6d28d9">
+      <div class="icono">${G_ICONOS[g.categoria]||'📦'}</div>
+      <div class="info"><div class="nombre">${escapar(g.desc)}</div>
+      <div class="cuando">${parseInt(g.fecha.slice(8,10),10)} de ${MESES[parseInt(g.fecha.slice(5,7),10)-1]} · ${G_NOMBRES[g.categoria]||''}</div></div>
+      <div class="monto">${plata(g.monto)}</div>
+    </div>`).join('')
+    : '<div class="vacio-seccion">Sin gastos registrados todavía</div>';
+}
+
+/* ---------- VISTA PAGOS ---------- */
+function renderPagos(){
+  const conEstado = pagosConEstado();
+  const visibles = conEstado.filter(x =>
+    filtro === 'todos' || (filtro === 'pendientes' && x.e.estado !== 'pagado') || (filtro === 'pagados' && x.e.estado === 'pagado'));
+  document.getElementById('vacio').style.display = pagos.length === 0 ? 'block' : 'none';
+  document.getElementById('lista').innerHTML = visibles.map(({pago:p, e}) => `
+    <div class="pago" style="--color:${p.color}">
+      <div class="icono">${ICONOS[p.tipo] || '🧾'}</div>
+      <div class="info">
+        <div class="nombre">${escapar(p.nombre)}</div>
+        <div class="cuando">${e.estado==='pagado' ? 'Próximo: ' : 'Vence el '}${fechaCorta(e.vence)} · día ${p.dia} de cada mes</div>
+        <div class="acciones">
+          <button class="btn-pague" data-accion="pagar" data-id="${p.id}" ${e.estado==='pagado' ? 'disabled' : ''}>${e.estado==='pagado' ? '✓ Pagado este mes' : '✓ Ya pagué'}</button>
+          <button class="btn-chico" data-accion="editar" data-id="${p.id}">✏️</button>
+          <button class="btn-chico" data-accion="borrar" data-id="${p.id}">🗑️</button>
+        </div>
+      </div>
+      <div class="lado">
+        <div class="monto">${plata(p.monto)}</div>
+        <div class="chip ${e.estado}">${textoChip(e)}</div>
+      </div>
+    </div>`).join('');
+}
+document.getElementById('lista').addEventListener('click', (ev) => {
+  const btn = ev.target.closest('button[data-accion]');
+  if (!btn || btn.disabled) return;
+  const pago = pagos.find(p => p.id === btn.dataset.id);
+  if (!pago) return;
+  if (btn.dataset.accion === 'pagar'){
+    pago.pagadoClave = claveDe(vencimientoEn(pago, new Date()));
+    guardarPagos(); renderTodo();
+  }
+  if (btn.dataset.accion === 'editar') abrirFormulario(pago);
+  if (btn.dataset.accion === 'borrar'){
+    if (confirm('¿Borrar "' + pago.nombre + '"?')){
+      pagos = pagos.filter(p => p.id !== pago.id);
+      guardarPagos(); renderTodo();
+    }
+  }
+});
+[['filtro-todos','todos'],['filtro-pendientes','pendientes'],['filtro-pagados','pagados']].forEach(([id, f]) => {
+  document.getElementById(id).addEventListener('click', () => {
+    filtro = f;
+    document.querySelectorAll('.filtros button').forEach(b => b.classList.remove('activo'));
+    document.getElementById(id).classList.add('activo');
+    renderPagos();
+  });
+});
+
+/* ---------- VISTA GASTOS ---------- */
+function renderGastos(){
+  const delMes = gastos
+    .filter(g => g.fecha.slice(0,7) === mesVer)
+    .sort((a,b) => (b.fecha + b.id).localeCompare(a.fecha + a.id));
+  const total = delMes.reduce((s,g) => s + (g.monto||0), 0);
+  document.getElementById('gasto-mes-label').textContent = nombreMes(mesVer);
+  document.getElementById('gasto-mes-next').disabled = mesVer >= claveMesActual();
+  document.getElementById('gasto-total').textContent = plata(total);
+  document.getElementById('gasto-detalle').textContent =
+    delMes.length ? delMes.length + (delMes.length===1 ? ' gasto este mes' : ' gastos este mes') : 'Sin gastos este mes';
+  const porCat = {};
+  delMes.forEach(g => { porCat[g.categoria] = (porCat[g.categoria]||0) + (g.monto||0); });
+  document.getElementById('gasto-categorias').innerHTML = Object.entries(porCat)
+    .sort((a,b) => b[1]-a[1])
+    .map(([c,v]) => `<span class="cat">${G_ICONOS[c]||'📦'} ${G_NOMBRES[c]||c} · ${plata(v)}</span>`).join('');
+  document.getElementById('vacio-gastos').style.display = delMes.length ? 'none' : 'block';
+  document.getElementById('lista-gastos').innerHTML = delMes.map(g => `
+    <div class="pago" style="--color:#6d28d9">
+      <div class="icono">${G_ICONOS[g.categoria]||'📦'}</div>
+      <div class="info">
+        <div class="nombre">${escapar(g.desc)}</div>
+        <div class="cuando">${parseInt(g.fecha.slice(8,10),10)} de ${MESES[parseInt(g.fecha.slice(5,7),10)-1]} · ${G_NOMBRES[g.categoria]||''}</div>
+        <div class="acciones">
+          <button class="btn-chico" data-gasto-borrar="${g.id}">🗑️ Borrar</button>
+        </div>
+      </div>
+      <div class="lado"><div class="monto">${plata(g.monto)}</div></div>
+    </div>`).join('');
+}
+document.getElementById('lista-gastos').addEventListener('click', (ev) => {
+  const btn = ev.target.closest('button[data-gasto-borrar]'); if (!btn) return;
+  gastos = gastos.filter(g => g.id !== btn.dataset.gastoBorrar);
+  guardarGastos(); renderTodo();
+});
+document.getElementById('gasto-mes-prev').addEventListener('click', () => { mesVer = moverMes(mesVer, -1); renderGastos(); });
+document.getElementById('gasto-mes-next').addEventListener('click', () => { mesVer = moverMes(mesVer, 1); renderGastos(); });
+
+/* ---------- Navegación: menú hamburguesa y vistas ---------- */
+function abrirMenu(){
+  document.getElementById('drawer').classList.add('visible');
+  document.getElementById('drawer-fondo').classList.add('visible');
+}
+function cerrarMenu(){
+  document.getElementById('drawer').classList.remove('visible');
+  document.getElementById('drawer-fondo').classList.remove('visible');
+}
+document.getElementById('btn-menu').addEventListener('click', abrirMenu);
+document.getElementById('drawer-fondo').addEventListener('click', cerrarMenu);
+
+function cambiarVista(v){
+  vistaActual = v;
+  ['general','pagos','gastos'].forEach(x => {
+    document.getElementById('vista-' + x).style.display = x === v ? 'block' : 'none';
+  });
+  document.querySelectorAll('.drawer nav button[data-vista]').forEach(b =>
+    b.classList.toggle('activo', b.dataset.vista === v));
+  document.getElementById('barra-subtitulo').textContent = SUBTITULOS[v];
+  cerrarMenu();
+  window.scrollTo({ top: 0 });
+}
+document.querySelectorAll('.drawer nav button[data-vista]').forEach(b =>
+  b.addEventListener('click', () => cambiarVista(b.dataset.vista)));
+document.querySelectorAll('[data-ir]').forEach(b =>
+  b.addEventListener('click', () => cambiarVista(b.dataset.ir)));
+
+/* ---------- Hojas (formularios) ---------- */
+function cerrarHojas(){
+  document.getElementById('fondo-modal').classList.remove('visible');
+  ['hoja','hoja-gasto','hoja-accion'].forEach(id => document.getElementById(id).classList.remove('visible'));
+}
+function abrirHoja(id){
+  document.getElementById('fondo-modal').classList.add('visible');
+  document.getElementById(id).classList.add('visible');
+}
+document.getElementById('fondo-modal').addEventListener('click', cerrarHojas);
+document.getElementById('btn-cancelar').addEventListener('click', cerrarHojas);
+document.getElementById('btn-cancelar-gasto').addEventListener('click', cerrarHojas);
+document.getElementById('btn-cancelar-accion').addEventListener('click', cerrarHojas);
+
+/* Botón + : según la vista, agrega pago, gasto, o pregunta cuál */
+document.getElementById('btn-agregar').addEventListener('click', () => {
+  if (vistaActual === 'pagos') abrirFormulario(null);
+  else if (vistaActual === 'gastos') abrirFormularioGasto();
+  else abrirHoja('hoja-accion');
+});
+document.getElementById('accion-pago').addEventListener('click', () => { cerrarHojas(); abrirFormulario(null); });
+document.getElementById('accion-gasto').addEventListener('click', () => { cerrarHojas(); abrirFormularioGasto(); });
+
+/* ---------- Formulario de pago ---------- */
+function pintarColores(){
+  document.getElementById('campo-colores').innerHTML = COLORES.map(c =>
+    `<div class="color ${c===colorElegido?'elegido':''}" data-color="${c}" style="background:${c}"></div>`).join('');
+}
+document.getElementById('campo-colores').addEventListener('click', (ev) => {
+  const el = ev.target.closest('.color'); if (!el) return;
+  colorElegido = el.dataset.color; pintarColores();
+});
+document.getElementById('rapidos').addEventListener('click', (ev) => {
+  const btn = ev.target.closest('button[data-tipo]'); if (!btn) return;
+  document.getElementById('campo-tipo').value = btn.dataset.tipo;
+  document.getElementById('campo-nombre').value = btn.dataset.nombre;
+  document.getElementById('campo-dia').focus();
+});
+function abrirFormulario(pago){
+  editandoId = pago ? pago.id : null;
+  document.getElementById('titulo-formulario').textContent = pago ? 'Editar pago' : 'Agregar pago';
+  document.getElementById('campo-nombre').value = pago ? pago.nombre : '';
+  document.getElementById('campo-tipo').value = pago ? pago.tipo : 'tarjeta';
+  document.getElementById('campo-dia').value = pago ? pago.dia : '';
+  document.getElementById('campo-monto').value = pago ? (pago.monto || '') : '';
+  colorElegido = pago ? pago.color : COLORES[pagos.length % COLORES.length];
+  pintarColores();
+  abrirHoja('hoja');
+}
+document.getElementById('btn-guardar').addEventListener('click', () => {
+  const nombre = document.getElementById('campo-nombre').value.trim();
+  const dia = parseInt(document.getElementById('campo-dia').value, 10);
+  const monto = parseFloat(document.getElementById('campo-monto').value) || 0;
+  if (!nombre){ alert('Falta el nombre del pago.'); return; }
+  if (!(dia >= 1 && dia <= 31)){ alert('El día de pago debe ser entre 1 y 31.'); return; }
+  const datos = { nombre, tipo:document.getElementById('campo-tipo').value, dia, monto, color:colorElegido };
+  if (editandoId) Object.assign(pagos.find(p => p.id === editandoId), datos);
+  else pagos.push({ id:'p' + Date.now(), pagadoClave:null, ...datos });
+  guardarPagos(); cerrarHojas(); renderTodo();
+});
+
+/* ---------- Formulario de gasto ---------- */
+function abrirFormularioGasto(){
+  const h = new Date();
+  document.getElementById('campo-g-desc').value = '';
+  document.getElementById('campo-g-monto').value = '';
+  document.getElementById('campo-g-categoria').value = 'comida';
+  document.getElementById('campo-g-fecha').value =
+    h.getFullYear() + '-' + String(h.getMonth()+1).padStart(2,'0') + '-' + String(h.getDate()).padStart(2,'0');
+  abrirHoja('hoja-gasto');
+}
+document.getElementById('btn-guardar-gasto').addEventListener('click', () => {
+  const desc = document.getElementById('campo-g-desc').value.trim();
+  const monto = parseFloat(document.getElementById('campo-g-monto').value) || 0;
+  const fecha = document.getElementById('campo-g-fecha').value;
+  if (!desc){ alert('Falta decir en qué gastaste.'); return; }
+  if (!(monto > 0)){ alert('Falta el monto del gasto.'); return; }
+  if (!fecha){ alert('Falta la fecha.'); return; }
+  gastos.push({ id:'g' + Date.now(), desc, monto, categoria:document.getElementById('campo-g-categoria').value, fecha });
+  guardarGastos();
+  mesVer = fecha.slice(0,7);
+  cerrarHojas(); renderTodo();
+});
+
+/* ---------- Ejemplos, respaldo y restauración ---------- */
+document.getElementById('btn-ejemplos').addEventListener('click', () => {
+  const enDias = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return d.getDate(); };
+  pagos = [
+    { id:'ej1', nombre:'Visa BancoEstado', tipo:'tarjeta', dia:enDias(-2), monto:48500, color:'#2563eb', pagadoClave:null },
+    { id:'ej2', nombre:'Mastercard Falabella', tipo:'tarjeta', dia:enDias(2), monto:120000, color:'#059669', pagadoClave:null },
+    { id:'ej3', nombre:'Luz (Enel)', tipo:'luz', dia:enDias(9), monto:32400, color:'#ea580c', pagadoClave:null },
+    { id:'ej4', nombre:'Plan celular', tipo:'celular', dia:enDias(20), monto:19990, color:'#6d28d9', pagadoClave:null }
+  ];
+  guardarPagos(); renderTodo();
+});
+document.getElementById('nav-exportar').addEventListener('click', () => {
+  cerrarMenu();
+  const blob = new Blob([JSON.stringify({ pagos, gastos }, null, 2)], { type:'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'mispagos-respaldo.json';
+  a.click();
+});
+document.getElementById('nav-importar').addEventListener('click', () => {
+  cerrarMenu();
+  document.getElementById('archivo-importar').click();
+});
+document.getElementById('archivo-importar').addEventListener('change', (ev) => {
+  const archivo = ev.target.files[0]; if (!archivo) return;
+  const lector = new FileReader();
+  lector.onload = () => {
+    try{
+      const datos = JSON.parse(lector.result);
+      if (Array.isArray(datos)){ pagos = datos; }
+      else if (datos && Array.isArray(datos.pagos)){ pagos = datos.pagos; if (Array.isArray(datos.gastos)) gastos = datos.gastos; }
+      else throw new Error('formato');
+      guardarPagos(); guardarGastos(); renderTodo();
+      alert('Respaldo restaurado ✓');
+    }catch(e){ alert('Ese archivo no es un respaldo válido.'); }
+  };
+  lector.readAsText(archivo);
+});
+
+/* ---------- Sincronización con la nube (servidor + MongoDB) ----------
+   La app parte con lo guardado en el teléfono (al instante) y después
+   trae lo de la nube. Cada cambio se sube solo, con una pequeña espera
+   para juntar varios cambios en un solo envío. Si no hay servidor
+   (abierta como archivo), queda en modo local sin romperse. */
+let syncTimer = null;
+function pintarNube(enNube){
+  const el = document.getElementById('nube-estado');
+  el.textContent = enNube ? '☁️ Nube' : '📱 Local';
+  el.classList.toggle('ok', !!enNube);
+}
+function programarSync(){
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(sincronizar, 700);
+}
+async function sincronizar(){
+  try{
+    const r = await fetch('/api/datos', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pagos, gastos })
+    });
+    if (!r.ok) throw new Error('sin servidor');
+    const datos = await r.json();
+    pintarNube(datos.modo === 'nube');
+  }catch(e){ pintarNube(false); }
+}
+async function cargarDeLaNube(){
+  try{
+    const r = await fetch('/api/datos');
+    if (!r.ok) throw new Error('sin servidor');
+    const datos = await r.json();
+    // Protección: si la nube está vacía pero el teléfono tiene datos
+    // (ej: se usó sin conexión), no se borra nada: se sube lo del teléfono.
+    const nubeVacia = !(datos.pagos && datos.pagos.length) && !(datos.gastos && datos.gastos.length);
+    const localTiene = pagos.length > 0 || gastos.length > 0;
+    if (nubeVacia && localTiene){ await sincronizar(); return; }
+    if (Array.isArray(datos.pagos)) pagos = datos.pagos;
+    if (Array.isArray(datos.gastos)) gastos = datos.gastos;
+    localStorage.setItem(CLAVE_PAGOS, JSON.stringify(pagos));
+    localStorage.setItem(CLAVE_GASTOS, JSON.stringify(gastos));
+    renderTodo();
+    pintarNube(true);
+  }catch(e){ pintarNube(false); }
+}
+// Service Worker: permite instalar la app en la pantalla de inicio
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+/* ---------- Pintar todo ---------- */
+function renderTodo(){ renderGeneral(); renderPagos(); renderGastos(); }
+renderTodo();
+cargarDeLaNube();
+</script>
+</body>
+</html>
