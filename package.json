@@ -1,0 +1,1 @@
+{"dependencies":{"express":"^4.19.2","mongoose":"^8.5.1"},"description":"Mis Pagos: recordatorio de tarjetas, servicios y cuentas + gastos del mes. Datos en MongoDB Atlas, PWA instalable.","engines":{"node":">=18"},"main":"server.js","name":"mis-pagos-app","scripts":{"start":"node server.js"},"version":"1.0.0"}
