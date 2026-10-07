@@ -256,6 +256,33 @@ app.get('/api/admin/usuarios', auth, soloAdmin, async (req, res) => {
   }
   res.json(salida);
 });
+// ---------- Claves: restablecer la de un usuario (solo admin) ----------
+// Actualiza el hash de la clave y cierra todas las sesiones de ese
+// usuario, para que la clave antigua deje de servir al instante.
+async function restablecerClave(id, claveHash) {
+  if (enNube()) { await Usuario.findByIdAndUpdate(id, { claveHash }); }
+  else {
+    const u = dbLocal.usuarios.find(x => x.id === id);
+    if (u) u.claveHash = claveHash;
+  }
+  if (enNube()) await Sesion.deleteMany({ usuarioId: id });
+  else dbLocal.sesiones = dbLocal.sesiones.filter(s => s.usuarioId !== id);
+  if (!enNube()) guardarLocal();
+}
+
+// Administrador: poner una clave nueva a un usuario que la olvidó.
+// El admin la elige (mínimo 6 caracteres) y se la pasa a la persona.
+app.post('/api/admin/usuarios/:id/restablecer-clave', auth, soloAdmin, async (req, res) => {
+  const { clave } = req.body || {};
+  if (String(clave || '').length < 6) return res.status(400).json({ error: 'La clave debe tener al menos 6 caracteres' });
+  try {
+    const u = await buscarPorId(req.params.id);
+    if (!u) return res.status(404).json({ error: 'Usuario no encontrado' });
+    await restablecerClave(String(u._id || u.id), await bcrypt.hash(String(clave), 10));
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: 'No se pudo restablecer la clave' }); }
+});
+
 // Administrador: ver los registros (pagos y gastos) de un usuario
 app.get('/api/admin/usuarios/:id/datos', auth, soloAdmin, async (req, res) => {
   const u = await buscarPorId(req.params.id);

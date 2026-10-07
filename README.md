@@ -14,7 +14,10 @@ guarda todo en **MongoDB Atlas** y se instala en el teléfono desde Chrome.
 - **Administrador**: en la pantalla de ingreso hay un **"Acceso
   administrador"**. El admin entra ahí y en el menú ☰ tiene la opción
   **Usuarios registrados**: ve nombre y correo de cada persona, cuántos
-  pagos/gastos/ingresos tiene, y puede mirar sus registros.
+  pagos/gastos/ingresos tiene, y puede mirar sus registros. Si alguien
+  olvida su clave, en el detalle de ese usuario el botón **🔑 Restablecer
+  clave** permite ponerle una temporal (mínimo 6 caracteres); la clave
+  anterior deja de servir y sus sesiones abiertas se cierran solas.
 - El administrador **nace de las variables de entorno** (ver abajo): no hay
   clave por defecto. Tus datos antiguos (los de antes de tener usuarios)
   pasan solos a tu cuenta de administrador la primera vez que entras.
