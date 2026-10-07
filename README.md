@@ -51,6 +51,11 @@ servidor, o **📱 Local** sin conexión (sincroniza cuando vuelve).
 - **Ingresos**: anota la **propina de cada día** y el **sueldo**; la Vista
   general separa cuánto vino de propinas y cuánto de sueldo.
 - El botón **+** se adapta a la vista en que estás.
+- **Toques v7**: saludo personal según la hora ("Buenas tardes, [nombre]"),
+  gráfico de barras ingresos vs gastos de los últimos 6 meses, animación
+  de check al marcar un pago como pagado, botón 🌙 de **modo oscuro** en
+  la barra superior (la preferencia queda guardada en el teléfono) y
+  footer con el desarrollador y la versión.
 
 ## Probarla en el PC (sin nube)
 
