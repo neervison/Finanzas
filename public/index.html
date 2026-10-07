@@ -317,7 +317,7 @@
 <div class="barra">
   <button class="btn-menu" id="btn-menu" title="Menú">☰</button>
   <div class="titulo">Mis Pagos<small id="barra-subtitulo">Vista general</small></div>
-  <div class="version">v12</div>
+  <div class="version">v13</div>
   <button id="btn-tema" title="Modo oscuro / claro">🌙</button>
   <div class="nube" id="nube-estado">📱 Local</div>
 </div>
@@ -384,7 +384,7 @@
       </div>
     </div>
   </div>
-  <div class="pie-login">Desarrollado por <strong>Neervison</strong> · Mis Pagos v12 · 2026</div>
+  <div class="pie-login">Desarrollado por <strong>Neervison</strong> · Mis Pagos v13 · 2026</div>
 </div>
 
 <main>
@@ -504,6 +504,8 @@
     <div id="admin-lista"></div>
     <div id="admin-detalle" style="display:none">
       <div class="seccion"><h3 id="admin-detalle-titulo">Registros</h3><button id="admin-volver">← Volver</button></div>
+      <div class="seccion"><button id="admin-restablecer">🔑 Restablecer clave de este usuario</button></div>
+      <p class="subtitulo-vista">Si olvidó su clave, ponle una temporal y pásasela; sus sesiones abiertas se cierran solas.</p>
       <div class="seccion"><h3>🧾 Sus pagos</h3></div>
       <div id="admin-detalle-pagos"></div>
       <div class="seccion"><h3>💸 Sus gastos</h3></div>
@@ -516,7 +518,7 @@
   <!-- Pie de página -->
   <footer class="pie">
     <div class="pie-logo">💳 Mis Pagos</div>
-    <div>Desarrollado por <strong>Neervison</strong> · Versión v12 · 2026</div>
+    <div>Desarrollado por <strong>Neervison</strong> · Versión v13 · 2026</div>
   </footer>
 </main>
 
@@ -1387,8 +1389,10 @@ async function cargarAdminUsuarios(){
       : '<div class="vacio-seccion">Todavía no hay usuarios registrados</div>';
   } catch(e){ lista.innerHTML = '<div class="vacio-seccion">No se pudo cargar la lista de usuarios</div>'; }
 }
+let adminDetalleId = null; // usuario abierto en el detalle del admin
 document.getElementById('admin-lista').addEventListener('click', async (ev) => {
   const btn = ev.target.closest('button[data-admin-ver]'); if (!btn) return;
+  adminDetalleId = btn.dataset.adminVer;
   try {
     const r = await fetch('/api/admin/usuarios/' + btn.dataset.adminVer + '/datos', { headers: authHeaders() });
     if (!r.ok) throw new Error('sin datos');
@@ -1418,6 +1422,24 @@ document.getElementById('admin-lista').addEventListener('click', async (ev) => {
         <div class="monto">+ ${plata(i.monto)}</div>
       </div>`).join('') : '<div class="vacio-seccion">Sin ingresos registrados</div>';
   } catch(e){ alert('No se pudieron cargar los registros de ese usuario.'); }
+});
+// Restablecer la clave del usuario abierto en el detalle (solo admin)
+document.getElementById('admin-restablecer').addEventListener('click', async () => {
+  if (!adminDetalleId) return;
+  const clave = prompt('Escribe la clave temporal nueva para este usuario (mínimo 6 caracteres):');
+  if (!clave) return;
+  if (clave.length < 6) { alert('La clave debe tener al menos 6 caracteres.'); return; }
+  if (!confirm('¿Seguro? La clave anterior dejará de servir y se cerrarán sus sesiones abiertas.')) return;
+  try {
+    const r = await fetch('/api/admin/usuarios/' + adminDetalleId + '/restablecer-clave', {
+      method: 'POST',
+      headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clave })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'error');
+    alert('✅ Clave restablecida. Pásale la clave temporal al usuario para que entre y la use.');
+  } catch(e){ alert('No se pudo restablecer la clave: ' + e.message); }
 });
 document.getElementById('admin-volver').addEventListener('click', () => {
   document.getElementById('admin-detalle').style.display = 'none';
