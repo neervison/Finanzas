@@ -62,7 +62,8 @@
 
   /* ---------- Vista general ---------- */
   .hero{margin-top:16px; border-radius:26px; color:#fff; padding:22px; position:relative; overflow:hidden;
-    background:linear-gradient(130deg,#4c1d95 0%,#7c3aed 52%,#db2777 115%); box-shadow:0 18px 38px rgba(109,40,217,.35)}
+    background:linear-gradient(130deg,#4c1d95 0%,#7c3aed 52%,#db2777 115%); background-size:180% 180%;
+    animation:fondoVivo 10s ease infinite; box-shadow:0 18px 38px rgba(109,40,217,.35)}
   .hero::after{content:''; position:absolute; width:230px; height:230px; border-radius:50%;
     background:rgba(255,255,255,.10); right:-70px; top:-80px}
   .hero .mes{font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1.2px; opacity:.85}
@@ -179,6 +180,72 @@
     border-radius:16px; padding:16px; margin-top:10px; font-size:16px; font-weight:800; cursor:pointer; color:var(--texto); text-align:left}
   .accion-btn .ico{font-size:24px}
   .accion-btn small{display:block; font-size:12.5px; font-weight:600; color:var(--suave)}
+
+  /* ---------- Pantalla de ingreso / registro ---------- */
+  .login-wrap{min-height:100dvh; display:flex; align-items:center; justify-content:center; padding:22px 16px;
+    background:linear-gradient(150deg,#4c1d95 0%,#7c3aed 40%,#db2777 80%,#f59e0b 130%);
+    background-size:200% 200%; animation:fondoVivo 14s ease infinite}
+  .login-card{background:#fff; border-radius:26px; box-shadow:0 24px 60px rgba(20,10,50,.35);
+    padding:28px 24px; width:100%; max-width:400px}
+  .login-card .logo{font-size:44px; text-align:center}
+  .login-card h1{margin:6px 0 2px; text-align:center; font-size:25px; font-weight:900}
+  .login-card .sub{text-align:center; color:var(--suave); font-size:13.5px; margin-bottom:8px}
+  .login-card h2{font-size:16px; font-weight:900; margin:16px 0 4px}
+  .login-card label{display:block; font-size:13px; font-weight:700; color:var(--suave); margin:13px 0 6px}
+  .login-card input{width:100%; padding:13px 14px; border:1.5px solid #e3e5f0; border-radius:12px; font-size:16px; background:#fbfbfe; font-family:inherit}
+  .login-card .entrar{width:100%; margin-top:20px; background:linear-gradient(135deg,var(--violeta),var(--rosado));
+    color:#fff; border:none; padding:15px; border-radius:14px; font-size:16px; font-weight:800; cursor:pointer}
+  .login-card .error{display:none; margin-top:14px; background:#fee2e2; color:#991b1b; border-radius:12px;
+    padding:11px 13px; font-size:13.5px; font-weight:700}
+  .login-card .error.visible{display:block}
+  .login-links{margin-top:18px; display:flex; flex-direction:column; gap:4px; text-align:center}
+  .login-links button{background:none; border:none; color:var(--violeta); font-weight:800; font-size:14px; cursor:pointer; padding:6px}
+  .login-links button.admin{color:var(--suave); font-size:13px}
+
+  /* ---------- Vista administrador ---------- */
+  .usuario-card{background:#fff; border-radius:18px; box-shadow:var(--sombra-suave); padding:15px 16px; margin-top:10px;
+    display:flex; align-items:center; gap:12px; width:100%; border:none; cursor:pointer; text-align:left; font-family:inherit}
+  .usuario-card .avatar{width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:19px; font-weight:900; color:#fff; background:linear-gradient(135deg,var(--violeta),var(--rosado)); flex:none}
+  .usuario-card .info{flex:1; min-width:0}
+  .usuario-card .nombre{font-weight:800; font-size:15.5px}
+  .usuario-card .correo{font-size:13px; color:var(--suave); overflow:hidden; text-overflow:ellipsis}
+  .usuario-card .conteo{font-size:12px; color:var(--suave); font-weight:700; white-space:nowrap}
+  .rol-chip{font-size:10.5px; font-weight:900; padding:3px 8px; border-radius:99px; background:#ede9fe; color:var(--morado); text-transform:uppercase; letter-spacing:.4px}
+  .rol-chip.admin{background:#fef3c7; color:#92400e}
+
+  /* ============================================================
+     v6 — Movimiento y vida: animaciones, balance e ingresos
+     ============================================================ */
+  @keyframes fondoVivo{0%{background-position:0% 40%}50%{background-position:100% 60%}100%{background-position:0% 40%}}
+  @keyframes aparecer{from{opacity:0; transform:translateY(12px)}to{opacity:1; transform:translateY(0)}}
+  @keyframes flotar{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  @keyframes pulso{0%{box-shadow:0 14px 30px rgba(109,40,217,.45), 0 0 0 0 rgba(219,39,119,.45)}
+    70%{box-shadow:0 14px 30px rgba(109,40,217,.45), 0 0 0 16px rgba(219,39,119,0)}
+    100%{box-shadow:0 14px 30px rgba(109,40,217,.45), 0 0 0 0 rgba(219,39,119,0)}}
+  main section{animation:aparecer .38s ease both}
+  .anim-in{animation:aparecer .45s ease both}
+  .login-card{animation:aparecer .55s cubic-bezier(.2,.9,.3,1.2) both}
+  .login-card .logo{animation:flotar 3.2s ease-in-out infinite}
+  .fab{animation:pulso 2.6s ease-out infinite}
+  .hoja input:focus,.hoja select:focus,.login-card input:focus{outline:none; border-color:var(--violeta);
+    box-shadow:0 0 0 4px rgba(124,58,237,.16); background:#fff}
+  button{transition:transform .12s ease, filter .12s ease}
+  button:active{transform:scale(.965)}
+  .stat{transition:transform .15s ease}
+  .stat:active{transform:scale(.96)}
+  .pago,.mini,.usuario-card{transition:transform .15s ease}
+  .pago:active,.mini:active{transform:scale(.985)}
+
+  /* Tarjeta de balance del mes (Vista general) */
+  .balance{margin-top:14px; background:#fff; border-radius:20px; box-shadow:var(--sombra-suave); padding:17px 18px;
+    border-left:6px solid var(--verde)}
+  .balance.neg{border-left-color:var(--rojo)}
+  .balance .top{display:flex; align-items:center; justify-content:space-between}
+  .balance .lbl{font-size:13px; font-weight:800; color:var(--suave); text-transform:uppercase; letter-spacing:.6px}
+  .balance .val{font-size:25px; font-weight:900}
+  .balance .val.pos{color:var(--verde)} .balance .val.neg{color:var(--rojo)}
+  .balance .detalle{font-size:13px; color:var(--suave); margin-top:5px}
 </style>
 </head>
 <body>
@@ -187,7 +254,7 @@
 <div class="barra">
   <button class="btn-menu" id="btn-menu" title="Menú">☰</button>
   <div class="titulo">Mis Pagos<small id="barra-subtitulo">Vista general</small></div>
-  <div class="version">v4</div>
+  <div class="version">v6</div>
   <div class="nube" id="nube-estado">📱 Local</div>
 </div>
 
@@ -197,19 +264,63 @@
   <div class="cabecera">
     <div class="logo">💳</div>
     <h2>Mis Pagos</h2>
-    <p>Tus tarjetas, cuentas y gastos en un solo lugar</p>
+    <p id="drawer-usuario">Tus tarjetas, cuentas y gastos en un solo lugar</p>
   </div>
   <nav>
     <button data-vista="general" class="activo"><span class="ico">🏠</span> Vista general</button>
     <button data-vista="pagos"><span class="ico">🧾</span> Pagos</button>
     <button data-vista="gastos"><span class="ico">💸</span> Gastos del mes</button>
+    <button data-vista="ingresos"><span class="ico">💰</span> Ingresos</button>
+    <button data-vista="admin" id="nav-admin" style="display:none"><span class="ico">👥</span> Usuarios registrados</button>
     <div class="separador"></div>
     <button id="nav-exportar"><span class="ico">⬇️</span> Respaldar datos</button>
     <button id="nav-importar"><span class="ico">⬆️</span> Restaurar respaldo</button>
+    <button id="nav-salir"><span class="ico">🚪</span> Cerrar sesión</button>
   </nav>
   <div class="pie">Tus datos quedan guardados en este teléfono. Baja un respaldo de vez en cuando.</div>
 </aside>
 <input type="file" id="archivo-importar" accept=".json" style="display:none">
+
+<!-- Pantalla de ingreso / registro (se muestra sin sesión) -->
+<div class="login-wrap" id="pantalla-login" style="display:none">
+  <div class="login-card">
+    <div class="logo">💳</div>
+    <h1>Mis Pagos</h1>
+    <div class="sub">Tus tarjetas, cuentas y gastos, guardados en la nube</div>
+
+    <!-- Formulario de ingreso -->
+    <div id="form-login">
+      <h2 id="login-titulo">Ingresar</h2>
+      <label>Correo</label>
+      <input id="login-correo" type="email" placeholder="tucorreo@ejemplo.cl" autocomplete="email">
+      <label>Clave</label>
+      <input id="login-clave" type="password" placeholder="Tu clave" autocomplete="current-password">
+      <div class="error" id="login-error"></div>
+      <button class="entrar" id="btn-ingresar">INGRESAR</button>
+      <div class="login-links">
+        <button id="link-registro">¿No tienes cuenta? Regístrate</button>
+        <button id="link-admin" class="admin">Acceso administrador</button>
+        <button id="link-normal" class="admin" style="display:none">Volver al ingreso normal</button>
+      </div>
+    </div>
+
+    <!-- Formulario de registro -->
+    <div id="form-registro" style="display:none">
+      <h2>Crear mi cuenta</h2>
+      <label>Nombre</label>
+      <input id="reg-nombre" type="text" placeholder="Tu nombre" autocomplete="name">
+      <label>Correo</label>
+      <input id="reg-correo" type="email" placeholder="tucorreo@ejemplo.cl" autocomplete="email">
+      <label>Clave (mínimo 6 caracteres)</label>
+      <input id="reg-clave" type="password" placeholder="Elige una clave" autocomplete="new-password">
+      <div class="error" id="reg-error"></div>
+      <button class="entrar" id="btn-registrar">CREAR CUENTA</button>
+      <div class="login-links">
+        <button id="link-ingresar">Ya tengo cuenta: ingresar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <main>
   <!-- ============ VISTA GENERAL ============ -->
@@ -238,8 +349,13 @@
 
     <div class="stats">
       <div class="stat"><div class="ico">💸</div><div class="val" id="g-stat-gastos">$0</div><div class="lbl">Gastos del mes</div></div>
-      <div class="stat"><div class="ico">✅</div><div class="val" id="g-stat-pagados">$0</div><div class="lbl">Ya pagado</div></div>
+      <div class="stat"><div class="ico">💰</div><div class="val" id="g-stat-ingresos">$0</div><div class="lbl">Ingresos del mes</div></div>
       <div class="stat"><div class="ico">⚠️</div><div class="val" id="g-stat-vencidos">0</div><div class="lbl">Vencidos</div></div>
+    </div>
+
+    <div class="balance" id="g-balance-card">
+      <div class="top"><span class="lbl">⚖️ Balance del mes</span><span class="val pos" id="g-balance">$0</span></div>
+      <div class="detalle" id="g-balance-detalle">Ingresos $0 · Gastos $0</div>
     </div>
 
     <div class="seccion"><h3>⏰ Próximos vencimientos</h3><button data-ir="pagos">Ver todos</button></div>
@@ -290,6 +406,43 @@
       <p><strong>Sin gastos registrados este mes.</strong><br>Toca el botón + para anotar el primero.</p>
     </div>
   </section>
+
+  <!-- ============ VISTA INGRESOS ============ -->
+  <section id="vista-ingresos" style="display:none">
+    <h2 class="titulo-vista">💰 Ingresos</h2>
+    <p class="subtitulo-vista">La propina de cada día, tu sueldo y otros ingresos</p>
+    <div class="mes-nav">
+      <button id="ingreso-mes-prev">‹</button>
+      <div class="mes-label" id="ingreso-mes-label"></div>
+      <button id="ingreso-mes-next">›</button>
+    </div>
+    <div class="gasto-resumen">
+      <div class="total" id="ingreso-total">$0</div>
+      <div class="detalle" id="ingreso-detalle">Sin ingresos este mes</div>
+      <div class="cat-chips" id="ingreso-categorias"></div>
+    </div>
+    <div id="lista-ingresos"></div>
+    <div class="vacio" id="vacio-ingresos" style="display:none">
+      <div class="grande">💰</div>
+      <p><strong>Sin ingresos registrados este mes.</strong><br>Toca el botón + y anota la propina de hoy.</p>
+    </div>
+  </section>
+
+  <!-- ============ VISTA ADMINISTRADOR ============ -->
+  <section id="vista-admin" style="display:none">
+    <h2 class="titulo-vista">👥 Usuarios registrados</h2>
+    <p class="subtitulo-vista">Las personas que crearon su cuenta en Mis Pagos</p>
+    <div id="admin-lista"></div>
+    <div id="admin-detalle" style="display:none">
+      <div class="seccion"><h3 id="admin-detalle-titulo">Registros</h3><button id="admin-volver">← Volver</button></div>
+      <div class="seccion"><h3>🧾 Sus pagos</h3></div>
+      <div id="admin-detalle-pagos"></div>
+      <div class="seccion"><h3>💸 Sus gastos</h3></div>
+      <div id="admin-detalle-gastos"></div>
+      <div class="seccion"><h3>💰 Sus ingresos</h3></div>
+      <div id="admin-detalle-ingresos"></div>
+    </div>
+  </section>
 </main>
 
 <button class="fab" id="btn-agregar" title="Agregar">+</button>
@@ -300,6 +453,7 @@
   <h2>¿Qué quieres agregar?</h2>
   <button class="accion-btn" id="accion-pago"><span class="ico">🧾</span><span>Un pago<small>Tarjeta, servicio o cuenta de cada mes</small></span></button>
   <button class="accion-btn" id="accion-gasto"><span class="ico">💸</span><span>Un gasto<small>Algo que gastaste hoy o este mes</small></span></button>
+  <button class="accion-btn" id="accion-ingreso"><span class="ico">💰</span><span>Un ingreso<small>La propina de hoy, tu sueldo u otro ingreso</small></span></button>
   <button class="cancelar" id="btn-cancelar-accion">Cancelar</button>
 </div>
 
@@ -365,6 +519,25 @@
   <button class="cancelar" id="btn-cancelar-gasto">Cancelar</button>
 </div>
 
+<!-- Hoja: formulario de ingreso -->
+<div class="hoja" id="hoja-ingreso">
+  <h2>Agregar ingreso</h2>
+  <label>Tipo de ingreso</label>
+  <select id="campo-i-tipo">
+    <option value="propina">💰 Propina del día</option>
+    <option value="sueldo">💵 Sueldo</option>
+    <option value="otro">📦 Otro ingreso</option>
+  </select>
+  <label>Monto ($)</label>
+  <input id="campo-i-monto" type="number" min="0" step="100" placeholder="Ej: 25000">
+  <label>Detalle (opcional)</label>
+  <input id="campo-i-detalle" type="text" placeholder="Ej: Turno PM, sueldo de octubre">
+  <label>Fecha</label>
+  <input id="campo-i-fecha" type="date">
+  <button class="guardar" id="btn-guardar-ingreso">Guardar ingreso</button>
+  <button class="cancelar" id="btn-cancelar-ingreso">Cancelar</button>
+</div>
+
 <script>
 /* ============================================================
    MIS PAGOS v3 — lógica
@@ -372,10 +545,18 @@
    Gasto: { id, desc, monto, categoria, fecha 'AAAA-MM-DD' }
    pagadoClave = periodo "AAAA-MM" del vencimiento ya pagado.
    ============================================================ */
-const CLAVE_PAGOS = 'mispagos_v1';
-const CLAVE_GASTOS = 'mispagos_gastos_v1';
+const CLAVE_SESION = 'mispagos_sesion_v1';
+let sesion = null;
+try { sesion = JSON.parse(localStorage.getItem(CLAVE_SESION)) || null; } catch(e) { sesion = null; }
+// Los datos en caché se guardan por usuario (su id va en la clave),
+// para que dos personas en el mismo teléfono no se mezclen.
+function clavePagos(){ return 'mispagos_v1_' + (sesion ? sesion.usuario.id : 'anon'); }
+function claveGastos(){ return 'mispagos_gastos_v1_' + (sesion ? sesion.usuario.id : 'anon'); }
+function claveIngresos(){ return 'mispagos_ingresos_v1_' + (sesion ? sesion.usuario.id : 'anon'); }
+function authHeaders(){ return sesion ? { 'Authorization': 'Bearer ' + sesion.token } : {}; }
 let pagos = cargarPagos();
 let gastos = cargarGastos();
+let ingresos = cargarIngresos();
 let filtro = 'todos';
 let editandoId = null;
 let colorElegido = '#6d28d9';
@@ -386,15 +567,34 @@ const COLORES = ['#6d28d9','#2563eb','#059669','#dc2626','#ea580c','#db2777','#0
 const ICONOS = { tarjeta:'💳', luz:'💡', agua:'💧', gas:'🔥', internet:'📶', celular:'📱', arriendo:'🏠', suscripcion:'🎬', otro:'🧾' };
 const G_ICONOS = { comida:'🍔', supermercado:'🛒', transporte:'🚌', local:'🏪', salud:'💊', ocio:'🎉', ropa:'👕', otro:'📦' };
 const G_NOMBRES = { comida:'Comida', supermercado:'Supermercado', transporte:'Transporte', local:'Local / negocio', salud:'Salud', ocio:'Ocio', ropa:'Ropa', otro:'Otro' };
+const I_ICONOS = { propina:'💰', sueldo:'💵', otro:'📦' };
+const I_NOMBRES = { propina:'Propina', sueldo:'Sueldo', otro:'Otro ingreso' };
 const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-const SUBTITULOS = { general:'Vista general', pagos:'Pagos', gastos:'Gastos del mes' };
+const SUBTITULOS = { general:'Vista general', pagos:'Pagos', gastos:'Gastos del mes', ingresos:'Ingresos', admin:'Usuarios registrados' };
 
 /* ---------- Utilidades ---------- */
-function cargarPagos(){ try{ return JSON.parse(localStorage.getItem(CLAVE_PAGOS)) || []; }catch(e){ return []; } }
-function cargarGastos(){ try{ return JSON.parse(localStorage.getItem(CLAVE_GASTOS)) || []; }catch(e){ return []; } }
-function guardarPagos(){ localStorage.setItem(CLAVE_PAGOS, JSON.stringify(pagos)); programarSync(); }
-function guardarGastos(){ localStorage.setItem(CLAVE_GASTOS, JSON.stringify(gastos)); programarSync(); }
+function cargarPagos(){ try{ return JSON.parse(localStorage.getItem(clavePagos())) || []; }catch(e){ return []; } }
+function cargarGastos(){ try{ return JSON.parse(localStorage.getItem(claveGastos())) || []; }catch(e){ return []; } }
+function cargarIngresos(){ try{ return JSON.parse(localStorage.getItem(claveIngresos())) || []; }catch(e){ return []; } }
+function guardarPagos(){ localStorage.setItem(clavePagos(), JSON.stringify(pagos)); programarSync(); }
+function guardarGastos(){ localStorage.setItem(claveGastos(), JSON.stringify(gastos)); programarSync(); }
+function guardarIngresos(){ localStorage.setItem(claveIngresos(), JSON.stringify(ingresos)); programarSync(); }
 function plata(n){ return '$' + Math.round(n||0).toLocaleString('es-CL'); }
+function plataBalance(n){ return (n < 0 ? '−' : '') + plata(Math.abs(n)); }
+// Anima un monto contando desde el valor anterior (toque "vivo" de la v6)
+function animarMonto(el, valor, conSigno){
+  const desde = parseFloat(el.dataset.v || '0');
+  el.dataset.v = valor;
+  const formato = (v) => conSigno ? plataBalance(v) : plata(v);
+  if (desde === valor){ el.textContent = formato(valor); return; }
+  const t0 = performance.now(), dur = 550;
+  (function paso(t){
+    const k = Math.min(1, ((t || t0) - t0) / dur);
+    const e = 1 - Math.pow(1 - k, 3);
+    el.textContent = formato(Math.round(desde + (valor - desde) * e));
+    if (k < 1) requestAnimationFrame(paso);
+  })(t0);
+}
 function escapar(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function hoyDia(){ const h = new Date(); h.setHours(0,0,0,0); return h; }
 function diffDias(a, b){ return Math.round((b - a) / 86400000); }
@@ -470,14 +670,28 @@ function renderGeneral(){
   const gastosMes = gastos.filter(g => g.fecha.slice(0,7) === mes);
 
   document.getElementById('g-mes').textContent = 'Resumen de ' + nombreMes(mes);
-  document.getElementById('g-total-pagar').textContent = plata(pendientes.reduce((s,x) => s + (x.pago.monto||0), 0));
+  animarMonto(document.getElementById('g-total-pagar'), pendientes.reduce((s,x) => s + (x.pago.monto||0), 0));
   document.getElementById('g-pendientes-detalle').textContent =
     pendientes.length === 0 ? 'Nada pendiente 🎉' : pendientes.length + (pendientes.length===1 ? ' pago pendiente' : ' pagos pendientes');
   const pct = conEstado.length ? Math.round(pagados.length / conEstado.length * 100) : 0;
   document.getElementById('g-pct').textContent = pct + '%';
   document.getElementById('g-anillo').style.strokeDashoffset = (226.2 * (1 - pct/100)).toFixed(1);
   document.getElementById('g-stat-gastos').textContent = plata(gastosMes.reduce((s,g) => s + (g.monto||0), 0));
-  document.getElementById('g-stat-pagados').textContent = plata(pagados.reduce((s,x) => s + (x.pago.monto||0), 0));
+  // Ingresos del mes y balance (ingresos − gastos)
+  const ingresosMes = ingresos.filter(i => i.fecha.slice(0,7) === mes);
+  const totalIngresos = ingresosMes.reduce((s,i) => s + (i.monto||0), 0);
+  const totalGastos = gastosMes.reduce((s,g) => s + (g.monto||0), 0);
+  document.getElementById('g-stat-ingresos').textContent = plata(totalIngresos);
+  const balance = totalIngresos - totalGastos;
+  const balEl = document.getElementById('g-balance');
+  animarMonto(balEl, balance, true);
+  balEl.className = 'val ' + (balance < 0 ? 'neg' : 'pos');
+  document.getElementById('g-balance-card').classList.toggle('neg', balance < 0);
+  const propinasMes = ingresosMes.filter(i => i.tipo === 'propina').reduce((s,i) => s + (i.monto||0), 0);
+  const sueldoMes = ingresosMes.filter(i => i.tipo === 'sueldo').reduce((s,i) => s + (i.monto||0), 0);
+  document.getElementById('g-balance-detalle').textContent =
+    'Propinas ' + plata(propinasMes) + ' · Sueldo ' + plata(sueldoMes) +
+    ' · Ya pagaste ' + plata(pagados.reduce((s,x) => s + (x.pago.monto||0), 0)) + ' en cuentas';
   document.getElementById('g-stat-vencidos').textContent = pendientes.filter(x => x.e.estado === 'vencido' || x.e.estado === 'hoy').length;
   pintarAlertas(pendientes);
 
@@ -521,8 +735,8 @@ function renderPagos(){
   const visibles = conEstado.filter(x =>
     filtro === 'todos' || (filtro === 'pendientes' && x.e.estado !== 'pagado') || (filtro === 'pagados' && x.e.estado === 'pagado'));
   document.getElementById('vacio').style.display = pagos.length === 0 ? 'block' : 'none';
-  document.getElementById('lista').innerHTML = visibles.map(({pago:p, e}) => `
-    <div class="pago" style="--color:${p.color}">
+  document.getElementById('lista').innerHTML = visibles.map(({pago:p, e}, idx) => `
+    <div class="pago anim-in" style="--color:${p.color}; animation-delay:${idx*45}ms">
       <div class="icono">${ICONOS[p.tipo] || '🧾'}</div>
       <div class="info">
         <div class="nombre">${escapar(p.nombre)}</div>
@@ -582,8 +796,8 @@ function renderGastos(){
     .sort((a,b) => b[1]-a[1])
     .map(([c,v]) => `<span class="cat">${G_ICONOS[c]||'📦'} ${G_NOMBRES[c]||c} · ${plata(v)}</span>`).join('');
   document.getElementById('vacio-gastos').style.display = delMes.length ? 'none' : 'block';
-  document.getElementById('lista-gastos').innerHTML = delMes.map(g => `
-    <div class="pago" style="--color:#6d28d9">
+  document.getElementById('lista-gastos').innerHTML = delMes.map((g, idx) => `
+    <div class="pago anim-in" style="--color:#6d28d9; animation-delay:${idx*45}ms">
       <div class="icono">${G_ICONOS[g.categoria]||'📦'}</div>
       <div class="info">
         <div class="nombre">${escapar(g.desc)}</div>
@@ -617,7 +831,7 @@ document.getElementById('drawer-fondo').addEventListener('click', cerrarMenu);
 
 function cambiarVista(v){
   vistaActual = v;
-  ['general','pagos','gastos'].forEach(x => {
+  ['general','pagos','gastos','ingresos','admin'].forEach(x => {
     document.getElementById('vista-' + x).style.display = x === v ? 'block' : 'none';
   });
   document.querySelectorAll('.drawer nav button[data-vista]').forEach(b =>
@@ -625,6 +839,7 @@ function cambiarVista(v){
   document.getElementById('barra-subtitulo').textContent = SUBTITULOS[v];
   cerrarMenu();
   window.scrollTo({ top: 0 });
+  if (v === 'admin') cargarAdminUsuarios();
 }
 document.querySelectorAll('.drawer nav button[data-vista]').forEach(b =>
   b.addEventListener('click', () => cambiarVista(b.dataset.vista)));
@@ -634,7 +849,7 @@ document.querySelectorAll('[data-ir]').forEach(b =>
 /* ---------- Hojas (formularios) ---------- */
 function cerrarHojas(){
   document.getElementById('fondo-modal').classList.remove('visible');
-  ['hoja','hoja-gasto','hoja-accion'].forEach(id => document.getElementById(id).classList.remove('visible'));
+  ['hoja','hoja-gasto','hoja-accion','hoja-ingreso'].forEach(id => document.getElementById(id).classList.remove('visible'));
 }
 function abrirHoja(id){
   document.getElementById('fondo-modal').classList.add('visible');
@@ -644,15 +859,18 @@ document.getElementById('fondo-modal').addEventListener('click', cerrarHojas);
 document.getElementById('btn-cancelar').addEventListener('click', cerrarHojas);
 document.getElementById('btn-cancelar-gasto').addEventListener('click', cerrarHojas);
 document.getElementById('btn-cancelar-accion').addEventListener('click', cerrarHojas);
+document.getElementById('btn-cancelar-ingreso').addEventListener('click', cerrarHojas);
 
-/* Botón + : según la vista, agrega pago, gasto, o pregunta cuál */
+/* Botón + : según la vista, agrega pago, gasto, ingreso, o pregunta cuál */
 document.getElementById('btn-agregar').addEventListener('click', () => {
   if (vistaActual === 'pagos') abrirFormulario(null);
   else if (vistaActual === 'gastos') abrirFormularioGasto();
+  else if (vistaActual === 'ingresos') abrirFormularioIngreso();
   else abrirHoja('hoja-accion');
 });
 document.getElementById('accion-pago').addEventListener('click', () => { cerrarHojas(); abrirFormulario(null); });
 document.getElementById('accion-gasto').addEventListener('click', () => { cerrarHojas(); abrirFormularioGasto(); });
+document.getElementById('accion-ingreso').addEventListener('click', () => { cerrarHojas(); abrirFormularioIngreso(); });
 
 /* ---------- Formulario de pago ---------- */
 function pintarColores(){
@@ -715,6 +933,75 @@ document.getElementById('btn-guardar-gasto').addEventListener('click', () => {
   cerrarHojas(); renderTodo();
 });
 
+/* ============================================================
+   INGRESOS (propina diaria, sueldo y otros)
+   Cada ingreso: { id, tipo, monto, detalle, fecha 'AAAA-MM-DD' }
+   ============================================================ */
+let mesVerIng = claveMesActual();
+
+function renderIngresos(){
+  const delMes = ingresos
+    .filter(i => i.fecha.slice(0,7) === mesVerIng)
+    .sort((a,b) => (b.fecha + b.id).localeCompare(a.fecha + a.id));
+  const total = delMes.reduce((s,i) => s + (i.monto||0), 0);
+  document.getElementById('ingreso-mes-label').textContent = nombreMes(mesVerIng);
+  document.getElementById('ingreso-mes-next').disabled = mesVerIng >= claveMesActual();
+  document.getElementById('ingreso-total').textContent = plata(total);
+  document.getElementById('ingreso-detalle').textContent =
+    delMes.length ? delMes.length + (delMes.length===1 ? ' ingreso este mes' : ' ingresos este mes') : 'Sin ingresos este mes';
+  const porTipo = {};
+  delMes.forEach(i => { porTipo[i.tipo] = (porTipo[i.tipo]||0) + (i.monto||0); });
+  document.getElementById('ingreso-categorias').innerHTML = Object.entries(porTipo)
+    .sort((a,b) => b[1]-a[1])
+    .map(([t,v]) => `<span class="cat">${I_ICONOS[t]||'📦'} ${I_NOMBRES[t]||t} · ${plata(v)}</span>`).join('');
+  document.getElementById('vacio-ingresos').style.display = delMes.length ? 'none' : 'block';
+  document.getElementById('lista-ingresos').innerHTML = delMes.map((i, idx) => `
+    <div class="pago anim-in" style="--color:#059669; animation-delay:${idx*45}ms">
+      <div class="icono">${I_ICONOS[i.tipo]||'📦'}</div>
+      <div class="info">
+        <div class="nombre">${escapar(i.detalle || I_NOMBRES[i.tipo] || 'Ingreso')}</div>
+        <div class="cuando">${parseInt(i.fecha.slice(8,10),10)} de ${MESES[parseInt(i.fecha.slice(5,7),10)-1]} · ${I_NOMBRES[i.tipo]||''}</div>
+        <div class="acciones">
+          <button class="btn-chico" data-ingreso-borrar="${i.id}">🗑️ Borrar</button>
+        </div>
+      </div>
+      <div class="lado"><div class="monto" style="color:var(--verde)">+ ${plata(i.monto)}</div></div>
+    </div>`).join('');
+}
+document.getElementById('lista-ingresos').addEventListener('click', (ev) => {
+  const btn = ev.target.closest('button[data-ingreso-borrar]'); if (!btn) return;
+  ingresos = ingresos.filter(i => i.id !== btn.dataset.ingresoBorrar);
+  guardarIngresos(); renderTodo();
+});
+document.getElementById('ingreso-mes-prev').addEventListener('click', () => { mesVerIng = moverMes(mesVerIng, -1); renderIngresos(); });
+document.getElementById('ingreso-mes-next').addEventListener('click', () => { mesVerIng = moverMes(mesVerIng, 1); renderIngresos(); });
+
+function abrirFormularioIngreso(){
+  const h = new Date();
+  document.getElementById('campo-i-tipo').value = 'propina';
+  document.getElementById('campo-i-monto').value = '';
+  document.getElementById('campo-i-detalle').value = '';
+  document.getElementById('campo-i-fecha').value =
+    h.getFullYear() + '-' + String(h.getMonth()+1).padStart(2,'0') + '-' + String(h.getDate()).padStart(2,'0');
+  abrirHoja('hoja-ingreso');
+}
+document.getElementById('btn-guardar-ingreso').addEventListener('click', () => {
+  const monto = parseFloat(document.getElementById('campo-i-monto').value) || 0;
+  const fecha = document.getElementById('campo-i-fecha').value;
+  if (!(monto > 0)){ alert('Falta el monto del ingreso.'); return; }
+  if (!fecha){ alert('Falta la fecha.'); return; }
+  ingresos.push({
+    id:'i' + Date.now(),
+    tipo: document.getElementById('campo-i-tipo').value,
+    monto,
+    detalle: document.getElementById('campo-i-detalle').value.trim(),
+    fecha
+  });
+  guardarIngresos();
+  mesVerIng = fecha.slice(0,7);
+  cerrarHojas(); renderTodo();
+});
+
 /* ---------- Ejemplos, respaldo y restauración ---------- */
 document.getElementById('btn-ejemplos').addEventListener('click', () => {
   const enDias = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return d.getDate(); };
@@ -728,7 +1015,7 @@ document.getElementById('btn-ejemplos').addEventListener('click', () => {
 });
 document.getElementById('nav-exportar').addEventListener('click', () => {
   cerrarMenu();
-  const blob = new Blob([JSON.stringify({ pagos, gastos }, null, 2)], { type:'application/json' });
+  const blob = new Blob([JSON.stringify({ pagos, gastos, ingresos }, null, 2)], { type:'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'mispagos-respaldo.json';
@@ -745,9 +1032,9 @@ document.getElementById('archivo-importar').addEventListener('change', (ev) => {
     try{
       const datos = JSON.parse(lector.result);
       if (Array.isArray(datos)){ pagos = datos; }
-      else if (datos && Array.isArray(datos.pagos)){ pagos = datos.pagos; if (Array.isArray(datos.gastos)) gastos = datos.gastos; }
+      else if (datos && Array.isArray(datos.pagos)){ pagos = datos.pagos; if (Array.isArray(datos.gastos)) gastos = datos.gastos; if (Array.isArray(datos.ingresos)) ingresos = datos.ingresos; }
       else throw new Error('formato');
-      guardarPagos(); guardarGastos(); renderTodo();
+      guardarPagos(); guardarGastos(); guardarIngresos(); renderTodo();
       alert('Respaldo restaurado ✓');
     }catch(e){ alert('Ese archivo no es un respaldo válido.'); }
   };
@@ -769,34 +1056,44 @@ function programarSync(){
   clearTimeout(syncTimer);
   syncTimer = setTimeout(sincronizar, 700);
 }
+function sesionExpirada(){
+  localStorage.removeItem(CLAVE_SESION);
+  location.reload();
+}
 async function sincronizar(){
+  if (!sesion) return;
   try{
     const r = await fetch('/api/datos', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pagos, gastos })
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ pagos, gastos, ingresos })
     });
+    if (r.status === 401){ sesionExpirada(); return; }
     if (!r.ok) throw new Error('sin servidor');
     const datos = await r.json();
     pintarNube(datos.modo === 'nube');
   }catch(e){ pintarNube(false); }
 }
 async function cargarDeLaNube(){
+  if (!sesion) return;
   try{
-    const r = await fetch('/api/datos');
+    const r = await fetch('/api/datos', { headers: authHeaders() });
+    if (r.status === 401){ sesionExpirada(); return; }
     if (!r.ok) throw new Error('sin servidor');
     const datos = await r.json();
     // Protección: si la nube está vacía pero el teléfono tiene datos
     // (ej: se usó sin conexión), no se borra nada: se sube lo del teléfono.
-    const nubeVacia = !(datos.pagos && datos.pagos.length) && !(datos.gastos && datos.gastos.length);
-    const localTiene = pagos.length > 0 || gastos.length > 0;
+    const nubeVacia = !(datos.pagos && datos.pagos.length) && !(datos.gastos && datos.gastos.length) && !(datos.ingresos && datos.ingresos.length);
+    const localTiene = pagos.length > 0 || gastos.length > 0 || ingresos.length > 0;
     if (nubeVacia && localTiene){ await sincronizar(); return; }
     if (Array.isArray(datos.pagos)) pagos = datos.pagos;
     if (Array.isArray(datos.gastos)) gastos = datos.gastos;
-    localStorage.setItem(CLAVE_PAGOS, JSON.stringify(pagos));
-    localStorage.setItem(CLAVE_GASTOS, JSON.stringify(gastos));
+    if (Array.isArray(datos.ingresos)) ingresos = datos.ingresos;
+    localStorage.setItem(clavePagos(), JSON.stringify(pagos));
+    localStorage.setItem(claveGastos(), JSON.stringify(gastos));
+    localStorage.setItem(claveIngresos(), JSON.stringify(ingresos));
     renderTodo();
-    pintarNube(true);
+    pintarNube(datos.modo === 'nube');
   }catch(e){ pintarNube(false); }
 }
 // Service Worker: permite instalar la app en la pantalla de inicio
@@ -804,10 +1101,185 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
+/* ============================================================
+   INGRESO, REGISTRO Y ADMINISTRADOR
+   ============================================================ */
+let modoAdmin = false; // el formulario está en modo "Acceso administrador"
+
+function mostrarLogin(){
+  document.getElementById('pantalla-login').style.display = 'flex';
+  document.querySelector('.barra').style.display = 'none';
+  document.querySelector('main').style.display = 'none';
+  document.getElementById('btn-agregar').style.display = 'none';
+}
+function mostrarApp(){
+  document.getElementById('pantalla-login').style.display = 'none';
+  document.querySelector('.barra').style.display = 'flex';
+  document.querySelector('main').style.display = 'block';
+  document.getElementById('btn-agregar').style.display = 'block';
+  document.getElementById('drawer-usuario').textContent =
+    (sesion.usuario.rol === 'admin' ? '👑 ' : '👤 ') + sesion.usuario.nombre + ' · ' + sesion.usuario.correo;
+  document.getElementById('nav-admin').style.display = sesion.usuario.rol === 'admin' ? 'flex' : 'none';
+}
+function errorEn(id, msg){
+  const el = document.getElementById(id);
+  el.textContent = msg || '';
+  el.classList.toggle('visible', !!msg);
+}
+async function pedir(ruta, opciones){
+  const r = await fetch(ruta, opciones);
+  let datos = {};
+  try { datos = await r.json(); } catch(e) {}
+  if (!r.ok) throw new Error(datos.error || 'Algo salió mal, intenta de nuevo');
+  return datos;
+}
+function entrarCon(data){
+  sesion = { token: data.token, usuario: data.usuario };
+  localStorage.setItem(CLAVE_SESION, JSON.stringify(sesion));
+  pagos = cargarPagos();       // caché propio de este usuario
+  gastos = cargarGastos();
+  ingresos = cargarIngresos();
+  mostrarApp();
+  cambiarVista('general');
+  renderTodo();
+  cargarDeLaNube();            // trae lo suyo desde el servidor
+}
+document.getElementById('btn-ingresar').addEventListener('click', async () => {
+  errorEn('login-error', '');
+  const correo = document.getElementById('login-correo').value.trim();
+  const clave = document.getElementById('login-clave').value;
+  if (!correo || !clave){ errorEn('login-error', 'Escribe tu correo y tu clave.'); return; }
+  try {
+    const data = await pedir('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ correo, clave }) });
+    if (modoAdmin && data.usuario.rol !== 'admin'){
+      // Entró una cuenta común por el acceso de administrador: se descarta la sesión
+      await fetch('/api/logout', { method:'POST', headers:{ 'Authorization':'Bearer ' + data.token } }).catch(() => {});
+      errorEn('login-error', 'Esa cuenta no es de administrador.');
+      return;
+    }
+    entrarCon(data);
+  } catch(e){ errorEn('login-error', e.message); }
+});
+document.getElementById('btn-registrar').addEventListener('click', async () => {
+  errorEn('reg-error', '');
+  const nombre = document.getElementById('reg-nombre').value.trim();
+  const correo = document.getElementById('reg-correo').value.trim();
+  const clave = document.getElementById('reg-clave').value;
+  if (!nombre || !correo || !clave){ errorEn('reg-error', 'Completa nombre, correo y clave.'); return; }
+  try {
+    const data = await pedir('/api/registro', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ nombre, correo, clave }) });
+    entrarCon(data);
+  } catch(e){ errorEn('reg-error', e.message); }
+});
+// Alternar formularios e ingreso normal / administrador
+document.getElementById('link-registro').addEventListener('click', () => {
+  document.getElementById('form-login').style.display = 'none';
+  document.getElementById('form-registro').style.display = 'block';
+});
+document.getElementById('link-ingresar').addEventListener('click', () => {
+  document.getElementById('form-registro').style.display = 'none';
+  document.getElementById('form-login').style.display = 'block';
+});
+document.getElementById('link-admin').addEventListener('click', () => {
+  modoAdmin = true;
+  document.getElementById('login-titulo').textContent = 'Acceso administrador';
+  document.getElementById('btn-ingresar').textContent = 'INGRESAR COMO ADMINISTRADOR';
+  document.getElementById('link-admin').style.display = 'none';
+  document.getElementById('link-normal').style.display = 'block';
+  errorEn('login-error', '');
+});
+document.getElementById('link-normal').addEventListener('click', () => {
+  modoAdmin = false;
+  document.getElementById('login-titulo').textContent = 'Ingresar';
+  document.getElementById('btn-ingresar').textContent = 'INGRESAR';
+  document.getElementById('link-admin').style.display = 'block';
+  document.getElementById('link-normal').style.display = 'none';
+  errorEn('login-error', '');
+});
+document.getElementById('login-clave').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('btn-ingresar').click(); });
+document.getElementById('reg-clave').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('btn-registrar').click(); });
+// Cerrar sesión (menú)
+document.getElementById('nav-salir').addEventListener('click', async () => {
+  cerrarMenu();
+  if (sesion) await fetch('/api/logout', { method:'POST', headers: authHeaders() }).catch(() => {});
+  localStorage.removeItem(CLAVE_SESION);
+  location.reload();
+});
+
+/* ---------- Vista administrador: registrados y sus registros ---------- */
+async function cargarAdminUsuarios(){
+  const lista = document.getElementById('admin-lista');
+  document.getElementById('admin-detalle').style.display = 'none';
+  lista.style.display = 'block';
+  lista.innerHTML = '<div class="vacio-seccion">Cargando usuarios…</div>';
+  try {
+    const r = await fetch('/api/admin/usuarios', { headers: authHeaders() });
+    if (!r.ok) throw new Error('No se pudo cargar la lista');
+    const usuarios = await r.json();
+    lista.innerHTML = usuarios.length ? usuarios.map(u => `
+      <button class="usuario-card" data-admin-ver="${u.id}">
+        <div class="avatar">${escapar((u.nombre || '?').trim().charAt(0).toUpperCase())}</div>
+        <div class="info">
+          <div class="nombre">${escapar(u.nombre)} <span class="rol-chip ${u.rol === 'admin' ? 'admin' : ''}">${u.rol === 'admin' ? 'Admin' : 'Usuario'}</span></div>
+          <div class="correo">${escapar(u.correo)}</div>
+        </div>
+        <div class="conteo">${u.numPagos} pagos · ${u.numGastos} gastos · ${u.numIngresos || 0} ingresos</div>
+      </button>`).join('')
+      : '<div class="vacio-seccion">Todavía no hay usuarios registrados</div>';
+  } catch(e){ lista.innerHTML = '<div class="vacio-seccion">No se pudo cargar la lista de usuarios</div>'; }
+}
+document.getElementById('admin-lista').addEventListener('click', async (ev) => {
+  const btn = ev.target.closest('button[data-admin-ver]'); if (!btn) return;
+  try {
+    const r = await fetch('/api/admin/usuarios/' + btn.dataset.adminVer + '/datos', { headers: authHeaders() });
+    if (!r.ok) throw new Error('sin datos');
+    const datos = await r.json();
+    document.getElementById('admin-lista').style.display = 'none';
+    document.getElementById('admin-detalle').style.display = 'block';
+    document.getElementById('admin-detalle-titulo').textContent = datos.usuario.nombre + ' · ' + datos.usuario.correo;
+    document.getElementById('admin-detalle-pagos').innerHTML = datos.pagos.length ? datos.pagos.map(p => `
+      <div class="mini" style="--color:${p.color || '#6d28d9'}">
+        <div class="icono">${ICONOS[p.tipo] || '🧾'}</div>
+        <div class="info"><div class="nombre">${escapar(p.nombre)}</div>
+        <div class="cuando">Día ${p.dia} de cada mes</div></div>
+        <div class="monto">${plata(p.monto)}</div>
+      </div>`).join('') : '<div class="vacio-seccion">Sin pagos registrados</div>';
+    document.getElementById('admin-detalle-gastos').innerHTML = datos.gastos.length ? datos.gastos.slice(0, 20).map(g => `
+      <div class="mini" style="--color:#6d28d9">
+        <div class="icono">${G_ICONOS[g.categoria] || '📦'}</div>
+        <div class="info"><div class="nombre">${escapar(g.desc)}</div>
+        <div class="cuando">${escapar(g.fecha)} · ${G_NOMBRES[g.categoria] || ''}</div></div>
+        <div class="monto">${plata(g.monto)}</div>
+      </div>`).join('') : '<div class="vacio-seccion">Sin gastos registrados</div>';
+    document.getElementById('admin-detalle-ingresos').innerHTML = (datos.ingresos && datos.ingresos.length) ? datos.ingresos.slice(0, 20).map(i => `
+      <div class="mini" style="--color:#059669">
+        <div class="icono">${I_ICONOS[i.tipo] || '📦'}</div>
+        <div class="info"><div class="nombre">${escapar(i.detalle || I_NOMBRES[i.tipo] || 'Ingreso')}</div>
+        <div class="cuando">${escapar(i.fecha)} · ${I_NOMBRES[i.tipo] || ''}</div></div>
+        <div class="monto">+ ${plata(i.monto)}</div>
+      </div>`).join('') : '<div class="vacio-seccion">Sin ingresos registrados</div>';
+  } catch(e){ alert('No se pudieron cargar los registros de ese usuario.'); }
+});
+document.getElementById('admin-volver').addEventListener('click', () => {
+  document.getElementById('admin-detalle').style.display = 'none';
+  document.getElementById('admin-lista').style.display = 'block';
+});
+
 /* ---------- Pintar todo ---------- */
-function renderTodo(){ renderGeneral(); renderPagos(); renderGastos(); }
-renderTodo();
-cargarDeLaNube();
+function renderTodo(){ renderGeneral(); renderPagos(); renderGastos(); renderIngresos(); }
+
+/* ---------- Arranque: con sesión entra a la app; sin sesión, al login ---------- */
+function arrancar(){
+  if (sesion && sesion.token){
+    mostrarApp();
+    cambiarVista('general');
+    renderTodo();
+    cargarDeLaNube();
+  } else {
+    mostrarLogin();
+  }
+}
+arrancar();
 </script>
 </body>
 </html>
