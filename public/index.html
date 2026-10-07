@@ -309,7 +309,7 @@
 <div class="barra">
   <button class="btn-menu" id="btn-menu" title="Menú">☰</button>
   <div class="titulo">Mis Pagos<small id="barra-subtitulo">Vista general</small></div>
-  <div class="version">v7</div>
+  <div class="version">v8</div>
   <button id="btn-tema" title="Modo oscuro / claro">🌙</button>
   <div class="nube" id="nube-estado">📱 Local</div>
 </div>
@@ -376,7 +376,7 @@
       </div>
     </div>
   </div>
-  <div class="pie-login">Desarrollado por <strong>Neervison</strong> · Mis Pagos v7 · 2026</div>
+  <div class="pie-login">Desarrollado por <strong>Neervison</strong> · Mis Pagos v8 · 2026</div>
 </div>
 
 <main>
@@ -508,7 +508,7 @@
   <!-- Pie de página -->
   <footer class="pie">
     <div class="pie-logo">💳 Mis Pagos</div>
-    <div>Desarrollado por <strong>Neervison</strong> · Versión v7 · 2026</div>
+    <div>Desarrollado por <strong>Neervison</strong> · Versión v8 · 2026</div>
   </footer>
 </main>
 
@@ -1280,6 +1280,7 @@ function entrarCon(data){
   cambiarVista('general');
   renderTodo();
   cargarDeLaNube();            // trae lo suyo desde el servidor
+  armarAtras();
 }
 document.getElementById('btn-ingresar').addEventListener('click', async () => {
   errorEn('login-error', '');
@@ -1402,6 +1403,35 @@ document.getElementById('admin-volver').addEventListener('click', () => {
   document.getElementById('admin-lista').style.display = 'block';
 });
 
+/* ============================================================
+   BOTÓN ATRÁS DE ANDROID
+   Sin esto, "atrás" salía de la app de una. Ahora funciona por
+   pasos: cierra la hoja abierta → cierra el menú → vuelve el
+   detalle del admin a la lista → vuelve a Vista general → y
+   recién en Vista general, sin nada abierto, deja salir.
+   ============================================================ */
+function armarAtras(){ history.pushState({ mp: 1 }, ''); }
+window.addEventListener('popstate', () => {
+  if (!sesion) return; // en el login, atrás sale normal
+  if (document.getElementById('fondo-modal').classList.contains('visible')){
+    cerrarHojas(); armarAtras(); return;
+  }
+  if (document.getElementById('drawer').classList.contains('visible')){
+    cerrarMenu(); armarAtras(); return;
+  }
+  const detalle = document.getElementById('admin-detalle');
+  if (vistaActual === 'admin' && detalle.style.display === 'block'){
+    detalle.style.display = 'none';
+    document.getElementById('admin-lista').style.display = 'block';
+    armarAtras(); return;
+  }
+  if (vistaActual !== 'general'){
+    cambiarVista('general'); armarAtras(); return;
+  }
+  // Ya está en Vista general sin nada abierto: no se re-arma,
+  // así el próximo "atrás" sale de la app como corresponde.
+});
+
 /* ---------- Pintar todo ---------- */
 function renderTodo(){ renderGeneral(); renderPagos(); renderGastos(); renderIngresos(); }
 
@@ -1412,6 +1442,7 @@ function arrancar(){
     cambiarVista('general');
     renderTodo();
     cargarDeLaNube();
+    armarAtras();
   } else {
     mostrarLogin();
   }
