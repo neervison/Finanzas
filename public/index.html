@@ -115,30 +115,30 @@
   .subtitulo-vista{font-size:13px; color:var(--suave); margin:0 2px}
   .filtros{display:flex; gap:8px; margin:14px 0 6px}
   .filtros button{flex:1; border:1.5px solid #e3e5f0; background:#fff; color:var(--suave);
-    padding:9px 0; border-radius:99px; font-size:14px; font-weight:700; cursor:pointer}
+    padding:8px 0; border-radius:99px; font-size:13.5px; font-weight:700; cursor:pointer}
   .filtros button.activo{background:var(--violeta); border-color:var(--violeta); color:#fff}
 
   /* ---------- Tarjeta de pago/gasto ---------- */
   .pago{background:var(--tarjeta); border-radius:var(--radio); box-shadow:var(--sombra-suave);
-    padding:16px; margin-top:12px; display:flex; gap:14px; align-items:flex-start; position:relative; overflow:hidden}
+    padding:12px 14px; margin-top:10px; display:flex; gap:12px; align-items:flex-start; position:relative; overflow:hidden}
   .pago::before{content:''; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--color,#6d28d9)}
-  .pago .icono{width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center;
-    font-size:24px; background:color-mix(in srgb, var(--color,#6d28d9) 12%, #fff)}
+  .pago .icono{width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+    font-size:21px; background:color-mix(in srgb, var(--color,#6d28d9) 12%, #fff)}
   .pago .info{flex:1; min-width:0}
-  .pago .nombre{font-weight:800; font-size:16px}
-  .pago .cuando{font-size:13px; color:var(--suave); margin-top:2px}
-  .pago .monto{font-size:19px; font-weight:800; white-space:nowrap}
+  .pago .nombre{font-weight:800; font-size:15.5px}
+  .pago .cuando{font-size:12.5px; color:var(--suave); margin-top:2px}
+  .pago .monto{font-size:18px; font-weight:800; white-space:nowrap}
   .pago .lado{display:flex; flex-direction:column; align-items:flex-end; gap:6px}
-  .chip{font-size:11.5px; font-weight:800; padding:4px 10px; border-radius:99px; white-space:nowrap}
+  .chip{font-size:11px; font-weight:800; padding:3px 9px; border-radius:99px; white-space:nowrap}
   .chip.vencido,.chip.hoy{background:#fee2e2; color:var(--rojo)}
   .chip.pronto{background:#fef3c7; color:var(--ambar)}
   .chip.ok{background:#e0e7ff; color:#4338ca}
   .chip.pagado{background:#dcfce7; color:var(--verde)}
-  .acciones{display:flex; gap:6px; margin-top:10px}
-  .acciones button{border:none; cursor:pointer; border-radius:10px; padding:8px 12px; font-size:13px; font-weight:700}
+  .acciones{display:flex; gap:6px; margin-top:8px}
+  .acciones button{border:none; cursor:pointer; border-radius:10px; padding:7px 10px; font-size:12.5px; font-weight:700; white-space:nowrap}
   .btn-pague{background:var(--verde); color:#fff}
   .btn-pague:disabled{background:#bbf7d0; color:#166534; cursor:default}
-  .btn-chico{background:#f1f2f8; color:var(--suave); border:none; cursor:pointer; border-radius:10px; padding:8px 11px; font-size:13px}
+  .btn-chico{background:#f1f2f8; color:var(--suave); border:none; cursor:pointer; border-radius:10px; padding:7px 10px; font-size:12.5px}
 
   .vacio{text-align:center; padding:40px 20px; color:var(--suave)}
   .vacio .grande{font-size:54px}
@@ -317,7 +317,7 @@
 <div class="barra">
   <button class="btn-menu" id="btn-menu" title="Menú">☰</button>
   <div class="titulo">Mis Pagos<small id="barra-subtitulo">Vista general</small></div>
-  <div class="version">v11</div>
+  <div class="version">v12</div>
   <button id="btn-tema" title="Modo oscuro / claro">🌙</button>
   <div class="nube" id="nube-estado">📱 Local</div>
 </div>
@@ -384,7 +384,7 @@
       </div>
     </div>
   </div>
-  <div class="pie-login">Desarrollado por <strong>Neervison</strong> · Mis Pagos v11 · 2026</div>
+  <div class="pie-login">Desarrollado por <strong>Neervison</strong> · Mis Pagos v12 · 2026</div>
 </div>
 
 <main>
@@ -516,7 +516,7 @@
   <!-- Pie de página -->
   <footer class="pie">
     <div class="pie-logo">💳 Mis Pagos</div>
-    <div>Desarrollado por <strong>Neervison</strong> · Versión v11 · 2026</div>
+    <div>Desarrollado por <strong>Neervison</strong> · Versión v12 · 2026</div>
   </footer>
 </main>
 
@@ -688,7 +688,7 @@ function animarMonto(el, valor, conSigno){
 function escapar(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function hoyDia(){ const h = new Date(); h.setHours(0,0,0,0); return h; }
 function diffDias(a, b){ return Math.round((b - a) / 86400000); }
-function fechaCorta(f){ return f.getDate() + ' de ' + MESES[f.getMonth()]; }
+function fechaCorta(f){ return f.getDate() + ' ' + MESES[f.getMonth()].slice(0,3); }
 function claveMesActual(){ const h = new Date(); return h.getFullYear() + '-' + String(h.getMonth()+1).padStart(2,'0'); }
 function moverMes(clave, delta){
   let [y, m] = clave.split('-').map(Number);
@@ -882,9 +882,9 @@ function renderPagos(){
       <div class="icono">${ICONOS[p.tipo] || '🧾'}</div>
       <div class="info">
         <div class="nombre">${escapar(p.nombre)}</div>
-        <div class="cuando">${e.estado==='pagado' ? 'Próximo: ' : 'Vence el '}${fechaCorta(e.vence)} · día ${p.dia} de cada mes</div>
+        <div class="cuando">${e.estado==='pagado' ? 'Próximo: ' : 'Vence el '}${fechaCorta(e.vence)} · día ${p.dia}</div>
         <div class="acciones">
-          <button class="btn-pague" data-accion="pagar" data-id="${p.id}" ${e.estado==='pagado' ? 'disabled' : ''}>${e.estado==='pagado' ? '✓ Pagado este mes' : '✓ Ya pagué'}</button>
+          <button class="btn-pague" data-accion="pagar" data-id="${p.id}" ${e.estado==='pagado' ? 'disabled' : ''}>${e.estado==='pagado' ? '✓ Pagado' : '✓ Ya pagué'}</button>
           <button class="btn-chico" data-accion="editar" data-id="${p.id}">✏️</button>
           <button class="btn-chico" data-accion="borrar" data-id="${p.id}">🗑️</button>
         </div>
