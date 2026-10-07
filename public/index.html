@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#5b21b6">
 <title>Mis Pagos — Recordatorio de tarjetas y cuentas</title>
+<script>try{ if (localStorage.getItem('mispagos_tema') === 'oscuro') document.documentElement.dataset.tema = 'oscuro'; }catch(e){}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -182,7 +183,7 @@
   .accion-btn small{display:block; font-size:12.5px; font-weight:600; color:var(--suave)}
 
   /* ---------- Pantalla de ingreso / registro ---------- */
-  .login-wrap{min-height:100dvh; display:flex; align-items:center; justify-content:center; padding:22px 16px;
+  .login-wrap{min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:22px 16px;
     background:linear-gradient(150deg,#4c1d95 0%,#7c3aed 40%,#db2777 80%,#f59e0b 130%);
     background-size:200% 200%; animation:fondoVivo 14s ease infinite}
   .login-card{background:#fff; border-radius:26px; box-shadow:0 24px 60px rgba(20,10,50,.35);
@@ -246,6 +247,60 @@
   .balance .val{font-size:25px; font-weight:900}
   .balance .val.pos{color:var(--verde)} .balance .val.neg{color:var(--rojo)}
   .balance .detalle{font-size:13px; color:var(--suave); margin-top:5px}
+
+  /* ---------- Pie de página (desarrollador y versión) ---------- */
+  .pie{text-align:center; color:var(--suave); font-size:12.5px; padding:30px 16px 96px; line-height:1.9}
+  .pie .pie-logo{font-size:15px; font-weight:900; color:var(--morado)}
+  .pie-login{margin-top:18px; color:rgba(255,255,255,.9); font-size:12.5px; text-align:center; text-shadow:0 1px 8px rgba(0,0,0,.25)}
+
+  /* ============================================================
+     v7 — Saludo, gráfico de meses, festejo al pagar y modo oscuro
+     ============================================================ */
+  #btn-tema{background:none; border:none; font-size:21px; cursor:pointer; padding:6px}
+  .saludo{margin-top:16px}
+  .saludo .hola{font-size:21px; font-weight:900}
+  .saludo .fecha{color:var(--suave); font-size:13.5px; margin-top:2px; text-transform:capitalize}
+  .leyenda{font-size:12px; color:var(--suave); font-weight:700}
+  .punto{display:inline-block; width:9px; height:9px; border-radius:3px; margin:0 4px 0 10px}
+  .punto.ing{background:#059669} .punto.gas{background:#db2777}
+  .grafico{display:flex; align-items:stretch; gap:8px; background:#fff; border-radius:20px;
+    box-shadow:var(--sombra-suave); padding:16px 12px 12px; height:185px}
+  .grafico .col{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:7px}
+  .grafico .barras{display:flex; align-items:flex-end; gap:4px; height:125px}
+  .grafico .barra-v{width:14px; height:var(--h); border-radius:6px 6px 3px 3px; animation:subirBarra .8s cubic-bezier(.2,.8,.3,1) both}
+  .grafico .barra-v.ing{background:linear-gradient(180deg,#34d399,#059669)}
+  .grafico .barra-v.gas{background:linear-gradient(180deg,#f472b6,#db2777)}
+  @keyframes subirBarra{from{height:0}}
+  .grafico .mes{font-size:11px; color:var(--suave); font-weight:700; text-transform:capitalize}
+  .festejo{position:fixed; inset:0; background:rgba(30,10,60,.48); display:flex; align-items:center;
+    justify-content:center; z-index:300; padding:20px}
+  .festejo-caja{text-align:center; animation:aparecer .3s ease both}
+  .festejo svg{width:112px; height:112px; fill:none; stroke:#34d399; stroke-width:3.5;
+    stroke-linecap:round; stroke-linejoin:round}
+  .festejo svg circle{stroke-dasharray:151; stroke-dashoffset:151; animation:trazar .5s ease forwards}
+  .festejo svg path{stroke-dasharray:40; stroke-dashoffset:40; animation:trazar .35s ease .35s forwards}
+  @keyframes trazar{to{stroke-dashoffset:0}}
+  .festejo-txt{color:#fff; font-size:22px; font-weight:900; margin-top:12px; text-shadow:0 2px 12px rgba(0,0,0,.4)}
+
+  /* ---------- 🌙 Modo oscuro ---------- */
+  html[data-tema="oscuro"]{--fondo:#0e0e1a; --texto:#f2f1fa; --suave:#a3a1c2}
+  html[data-tema="oscuro"] .barra{background:rgba(14,14,26,.92); box-shadow:0 4px 18px rgba(0,0,0,.5)}
+  html[data-tema="oscuro"] .stat, html[data-tema="oscuro"] .pago, html[data-tema="oscuro"] .mini,
+  html[data-tema="oscuro"] .balance, html[data-tema="oscuro"] .gasto-resumen, html[data-tema="oscuro"] .grafico,
+  html[data-tema="oscuro"] .usuario-card, html[data-tema="oscuro"] .hoja, html[data-tema="oscuro"] .login-card,
+  html[data-tema="oscuro"] .vacio{background:#1d1d30; box-shadow:0 10px 26px rgba(0,0,0,.45)}
+  html[data-tema="oscuro"] .drawer{background:#171729}
+  html[data-tema="oscuro"] .drawer nav button{color:var(--texto)}
+  html[data-tema="oscuro"] .drawer nav button.activo{background:#2a2a48}
+  html[data-tema="oscuro"] .hoja input, html[data-tema="oscuro"] .hoja select,
+  html[data-tema="oscuro"] .login-card input{background:#26263f; border-color:#3d3d63; color:var(--texto)}
+  html[data-tema="oscuro"] .hoja .cancelar{background:#26263f; color:var(--texto)}
+  html[data-tema="oscuro"] .btn-chico{background:#26263f; color:var(--texto)}
+  html[data-tema="oscuro"] .btn-chico.rojo{background:#3d2333; color:#fda4af}
+  html[data-tema="oscuro"] .mes-nav button{background:#26263f; color:var(--texto)}
+  html[data-tema="oscuro"] .accion-btn{background:#26263f; color:var(--texto)}
+  html[data-tema="oscuro"] .cat{background:#26263f; color:#c4b5fd}
+  html[data-tema="oscuro"] .seccion button{background:#2a2a48; color:#c4b5fd}
 </style>
 </head>
 <body>
@@ -254,7 +309,8 @@
 <div class="barra">
   <button class="btn-menu" id="btn-menu" title="Menú">☰</button>
   <div class="titulo">Mis Pagos<small id="barra-subtitulo">Vista general</small></div>
-  <div class="version">v6</div>
+  <div class="version">v7</div>
+  <button id="btn-tema" title="Modo oscuro / claro">🌙</button>
   <div class="nube" id="nube-estado">📱 Local</div>
 </div>
 
@@ -320,11 +376,13 @@
       </div>
     </div>
   </div>
+  <div class="pie-login">Desarrollado por <strong>Neervison</strong> · Mis Pagos v7 · 2026</div>
 </div>
 
 <main>
   <!-- ============ VISTA GENERAL ============ -->
   <section id="vista-general">
+    <div class="saludo" id="g-saludo"></div>
     <div class="alerta" id="alerta-general"></div>
     <div class="hero">
       <div class="mes" id="g-mes">Este mes</div>
@@ -357,6 +415,9 @@
       <div class="top"><span class="lbl">⚖️ Balance del mes</span><span class="val pos" id="g-balance">$0</span></div>
       <div class="detalle" id="g-balance-detalle">Ingresos $0 · Gastos $0</div>
     </div>
+
+    <div class="seccion"><h3>📊 Ingresos vs gastos</h3><span class="leyenda"><i class="punto ing"></i>Ingresos<i class="punto gas"></i>Gastos</span></div>
+    <div class="grafico" id="g-grafico"></div>
 
     <div class="seccion"><h3>⏰ Próximos vencimientos</h3><button data-ir="pagos">Ver todos</button></div>
     <div id="g-proximos"></div>
@@ -443,9 +504,23 @@
       <div id="admin-detalle-ingresos"></div>
     </div>
   </section>
+
+  <!-- Pie de página -->
+  <footer class="pie">
+    <div class="pie-logo">💳 Mis Pagos</div>
+    <div>Desarrollado por <strong>Neervison</strong> · Versión v7 · 2026</div>
+  </footer>
 </main>
 
 <button class="fab" id="btn-agregar" title="Agregar">+</button>
+
+<!-- Festejo al marcar un pago como pagado -->
+<div class="festejo" id="festejo" style="display:none">
+  <div class="festejo-caja">
+    <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M14 27l8 8 16-17"/></svg>
+    <div class="festejo-txt" id="festejo-txt">¡Pagado!</div>
+  </div>
+</div>
 
 <!-- Hoja: elegir qué agregar (desde Vista general) -->
 <div class="fondo-modal" id="fondo-modal"></div>
@@ -662,7 +737,40 @@ function pintarAlertas(pendientes){
 }
 
 /* ---------- VISTA GENERAL ---------- */
+/* ---------- 👋 Saludo según la hora ---------- */
+function pintarSaludo(){
+  if (!sesion) return;
+  const ahora = new Date(), h = ahora.getHours();
+  const saludo = h < 12 ? 'Buenos días' : h < 20 ? 'Buenas tardes' : 'Buenas noches';
+  const emoji = h < 12 ? '☀️' : h < 20 ? '🌇' : '🌙';
+  const primerNombre = (sesion.usuario.nombre || '').trim().split(' ')[0];
+  const fecha = ahora.toLocaleDateString('es-CL', { weekday:'long', day:'numeric', month:'long' });
+  document.getElementById('g-saludo').innerHTML =
+    `<div class="hola">${emoji} ${saludo}, ${escapar(primerNombre)}</div><div class="fecha">${fecha}</div>`;
+}
+/* ---------- 📊 Serie de los últimos n meses (para el gráfico) ---------- */
+function ultimosMeses(n){
+  const hoy = new Date(), out = [];
+  for (let i = n - 1; i >= 0; i--){
+    const d = new Date(hoy.getFullYear(), hoy.getMonth() - i, 1);
+    out.push(d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'));
+  }
+  return out;
+}
+/* ---------- 🎉 Festejo al marcar un pago ---------- */
+let festejoTimer = null;
+function festejarPago(nombre){
+  const f = document.getElementById('festejo');
+  document.getElementById('festejo-txt').textContent = '¡Pagado! ' + (nombre || '');
+  f.style.display = 'flex';
+  const svg = f.querySelector('svg');
+  svg.replaceWith(svg.cloneNode(true)); // reinicia la animación del check
+  clearTimeout(festejoTimer);
+  festejoTimer = setTimeout(() => { f.style.display = 'none'; }, 1500);
+}
+
 function renderGeneral(){
+  pintarSaludo();
   const conEstado = pagosConEstado();
   const pendientes = conEstado.filter(x => x.e.estado !== 'pagado');
   const pagados = conEstado.filter(x => x.e.estado === 'pagado');
@@ -692,6 +800,21 @@ function renderGeneral(){
   document.getElementById('g-balance-detalle').textContent =
     'Propinas ' + plata(propinasMes) + ' · Sueldo ' + plata(sueldoMes) +
     ' · Ya pagaste ' + plata(pagados.reduce((s,x) => s + (x.pago.monto||0), 0)) + ' en cuentas';
+  // Gráfico de barras: ingresos vs gastos de los últimos 6 meses
+  const serie = ultimosMeses(6).map(m => ({
+    mes: m,
+    ing: ingresos.filter(i => i.fecha.slice(0,7) === m).reduce((s,i) => s + (i.monto||0), 0),
+    gas: gastos.filter(g => g.fecha.slice(0,7) === m).reduce((s,g) => s + (g.monto||0), 0)
+  }));
+  const maxSerie = Math.max(1, ...serie.map(s => Math.max(s.ing, s.gas)));
+  document.getElementById('g-grafico').innerHTML = serie.map(s => `
+    <div class="col">
+      <div class="barras" title="${nombreMes(s.mes)} · Ingresos ${plata(s.ing)} · Gastos ${plata(s.gas)}">
+        <div class="barra-v ing" style="--h:${s.ing ? Math.max(4, Math.round(s.ing / maxSerie * 100)) : 0}%"></div>
+        <div class="barra-v gas" style="--h:${s.gas ? Math.max(4, Math.round(s.gas / maxSerie * 100)) : 0}%"></div>
+      </div>
+      <div class="mes">${MESES[parseInt(s.mes.slice(5,7),10)-1].slice(0,3)}</div>
+    </div>`).join('');
   document.getElementById('g-stat-vencidos').textContent = pendientes.filter(x => x.e.estado === 'vencido' || x.e.estado === 'hoy').length;
   pintarAlertas(pendientes);
 
@@ -760,7 +883,7 @@ document.getElementById('lista').addEventListener('click', (ev) => {
   if (!pago) return;
   if (btn.dataset.accion === 'pagar'){
     pago.pagadoClave = claveDe(vencimientoEn(pago, new Date()));
-    guardarPagos(); renderTodo();
+    guardarPagos(); renderTodo(); festejarPago(pago.nombre);
   }
   if (btn.dataset.accion === 'editar') abrirFormulario(pago);
   if (btn.dataset.accion === 'borrar'){
@@ -828,6 +951,20 @@ function cerrarMenu(){
 }
 document.getElementById('btn-menu').addEventListener('click', abrirMenu);
 document.getElementById('drawer-fondo').addEventListener('click', cerrarMenu);
+
+/* ---------- 🌙 Modo oscuro (la preferencia queda guardada) ---------- */
+function aplicarIconoTema(){
+  const b = document.getElementById('btn-tema');
+  if (b) b.textContent = document.documentElement.dataset.tema === 'oscuro' ? '☀️' : '🌙';
+}
+document.getElementById('btn-tema').addEventListener('click', () => {
+  const oscuro = document.documentElement.dataset.tema !== 'oscuro';
+  if (oscuro) document.documentElement.dataset.tema = 'oscuro';
+  else delete document.documentElement.dataset.tema;
+  try { localStorage.setItem('mispagos_tema', oscuro ? 'oscuro' : 'claro'); } catch(e) {}
+  aplicarIconoTema();
+});
+aplicarIconoTema();
 
 function cambiarVista(v){
   vistaActual = v;
