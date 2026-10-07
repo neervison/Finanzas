@@ -183,9 +183,12 @@
   .accion-btn small{display:block; font-size:12.5px; font-weight:600; color:var(--suave)}
 
   /* ---------- Pantalla de ingreso / registro ---------- */
-  .login-wrap{min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:22px 16px;
+  .login-wrap{position:fixed; inset:0; z-index:200; overflow-y:auto; display:flex; flex-direction:column; align-items:center; justify-content:safe center; padding:22px 16px;
     background:linear-gradient(150deg,#4c1d95 0%,#7c3aed 40%,#db2777 80%,#f59e0b 130%);
     background-size:200% 200%; animation:fondoVivo 14s ease infinite}
+  /* Sin sesión no corre el espacio inferior de la app (era lo que dejaba
+     la franja clara y hacía que el login "se moviera" al deslizar) */
+  body.sin-sesion{padding-bottom:0; overflow:hidden}
   .login-card{background:#fff; border-radius:26px; box-shadow:0 24px 60px rgba(20,10,50,.35);
     padding:28px 24px; width:100%; max-width:400px}
   .login-card .logo{font-size:44px; text-align:center}
@@ -314,7 +317,7 @@
 <div class="barra">
   <button class="btn-menu" id="btn-menu" title="Menú">☰</button>
   <div class="titulo">Mis Pagos<small id="barra-subtitulo">Vista general</small></div>
-  <div class="version">v9</div>
+  <div class="version">v11</div>
   <button id="btn-tema" title="Modo oscuro / claro">🌙</button>
   <div class="nube" id="nube-estado">📱 Local</div>
 </div>
@@ -381,7 +384,7 @@
       </div>
     </div>
   </div>
-  <div class="pie-login">Desarrollado por <strong>Neervison</strong> · Mis Pagos v9 · 2026</div>
+  <div class="pie-login">Desarrollado por <strong>Neervison</strong> · Mis Pagos v11 · 2026</div>
 </div>
 
 <main>
@@ -513,7 +516,7 @@
   <!-- Pie de página -->
   <footer class="pie">
     <div class="pie-logo">💳 Mis Pagos</div>
-    <div>Desarrollado por <strong>Neervison</strong> · Versión v9 · 2026</div>
+    <div>Desarrollado por <strong>Neervison</strong> · Versión v11 · 2026</div>
   </footer>
 </main>
 
@@ -1260,12 +1263,14 @@ if ('serviceWorker' in navigator) {
 let modoAdmin = false; // el formulario está en modo "Acceso administrador"
 
 function mostrarLogin(){
+  document.body.classList.add('sin-sesion');
   document.getElementById('pantalla-login').style.display = 'flex';
   document.querySelector('.barra').style.display = 'none';
   document.querySelector('main').style.display = 'none';
   document.getElementById('btn-agregar').style.display = 'none';
 }
 function mostrarApp(){
+  document.body.classList.remove('sin-sesion');
   document.getElementById('pantalla-login').style.display = 'none';
   document.querySelector('.barra').style.display = 'flex';
   document.querySelector('main').style.display = 'block';
