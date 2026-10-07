@@ -1,58 +1,63 @@
 # Mis Pagos — App instalable con datos en la nube
 
-La misma app Mis Pagos, pero como PropinasApp: corre en un servidor
-(Node + Express) y guarda todo en **MongoDB Atlas**. Se instala en el
-teléfono desde el navegador y los datos ya no dependen del teléfono.
+App para llevar tus finanzas personales: recordatorio de pagos (tarjetas,
+servicios y cuentas), gastos del mes e **ingresos** (la propina de cada día
+y el sueldo), con balance mensual. Corre en un servidor (Node + Express),
+guarda todo en **MongoDB Atlas** y se instala en el teléfono desde Chrome.
 
-## Archivos
+## Cuentas y roles (v5/v6)
 
-- `server.js` — servidor + API (`/api/datos`): lee y guarda pagos y gastos.
-- `public/` — la app (página, manifiesto PWA, service worker e íconos).
-- `package.json` — dependencias (express, mongoose).
+- **Registro**: cualquier persona se crea su cuenta con nombre, correo y
+  clave (mínimo 6 caracteres). Las claves van cifradas (bcrypt).
+- **Ingreso**: cada usuario entra con su correo y ve **solo sus datos**
+  (pagos, gastos e ingresos son por usuario).
+- **Administrador**: en la pantalla de ingreso hay un **"Acceso
+  administrador"**. El admin entra ahí y en el menú ☰ tiene la opción
+  **Usuarios registrados**: ve nombre y correo de cada persona, cuántos
+  pagos/gastos/ingresos tiene, y puede mirar sus registros.
+- El administrador **nace de las variables de entorno** (ver abajo): no hay
+  clave por defecto. Tus datos antiguos (los de antes de tener usuarios)
+  pasan solos a tu cuenta de administrador la primera vez que entras.
 
-## Cómo publicarla (igual que PropinasApp)
+## Publicarla en Render (igual que PropinasApp)
 
-1. Crea un repositorio **privado** en GitHub (ej: `mis-pagos`) y sube estos
-   archivos (la carpeta `subir-a-github-mispagos` trae todo listo).
-2. En **Render**: New → Web Service → conecta el repositorio.
-   - Build command: `npm install`
-   - Start command: `npm start`
-3. En Render → Environment, agrega la variable:
-   - `MONGODB_URI` = la misma cadena de conexión de tu MongoDB Atlas.
-   La app usa su propia base llamada **mispagos**: no se mezcla con
-   PropinasApp.
-4. Espera el deploy y abre la dirección que te dé Render
-   (ej: `https://mis-pagos.onrender.com`).
+1. Sube estos archivos al repo privado de GitHub (carpeta
+   `subir-a-github-mispagos`): `server.js`, `package.json`,
+   `package-lock.json`, `README.md` y la carpeta `public/`.
+2. En **Render**: el Web Service ya creado se actualiza solo con cada
+   subida (auto-deploy). Si es nuevo: Build `npm install`, Start `npm start`.
+3. Variables de entorno en Render → Environment:
+   - `MONGODB_URI` = tu cadena de MongoDB Atlas (base propia: **mispagos**).
+   - `ADMIN_NOMBRE` = tu nombre (ej: el tuyo).
+   - `ADMIN_CORREO` = el correo con el que entrarás como administrador.
+   - `ADMIN_CLAVE` = la clave de administrador que tú elijas (mín. 6).
+4. Guarda: Render redeploya y el admin queda creado.
+
+Producción actual: https://finanzas-6gax.onrender.com
 
 ## Instalarla en el teléfono
 
-1. Abre la dirección en **Chrome**.
-2. Menú ⋮ → **"Agregar a la pantalla de inicio"** (o el aviso "Instalar app").
-3. Queda el ícono 💳 junto a tus apps y se abre a pantalla completa.
+Abre la dirección en Chrome → menú ⋮ → **Instalar app**. Queda el ícono
+junto a tus apps. Arriba a la derecha verás **☁️ Nube** cuando guarda en el
+servidor, o **📱 Local** sin conexión (sincroniza cuando vuelve).
 
-Arriba a la derecha la app muestra **☁️ Nube** cuando está guardando en el
-servidor, o **📱 Local** si no hay conexión (sigue funcionando y sincroniza
-después; si la nube está vacía y el teléfono tiene datos, nunca los borra:
-los sube).
+## Uso diario
 
-## Pasar tus datos de la versión anterior
-
-1. En la app anterior (el archivo suelto): menú ☰ → **Respaldar datos** y
-   guarda el archivo `mispagos-respaldo.json`.
-2. En la app nueva ya instalada: menú ☰ → **Restaurar respaldo** y elige ese
-   archivo. Se suben solos a la nube.
+- **Vista general**: cuánto falta por pagar (con anillo de progreso),
+  gastos e ingresos del mes, **balance (ingresos − gastos)**, próximos
+  vencimientos y últimos movimientos.
+- **Pagos**: tarjetas/servicios/cuentas con día de pago; botón "Ya pagué".
+- **Gastos**: anota gastos por categoría, con total del mes.
+- **Ingresos**: anota la **propina de cada día** y el **sueldo**; la Vista
+  general separa cuánto vino de propinas y cuánto de sueldo.
+- El botón **+** se adapta a la vista en que estás.
 
 ## Probarla en el PC (sin nube)
 
 ```
 npm install
-npm start
+ADMIN_CORREO=admin@test.cl ADMIN_CLAVE=admin123 npm start
 ```
 
-Abre http://localhost:3000 — sin `MONGODB_URI` guarda en un `data.json`
-local, ideal para practicar sin tocar la nube.
-
-## APK (opcional)
-
-Cuando esté publicada, se puede envolver en un APK de Android igual que
-PropinasPro: pídela y se genera con la dirección de Render.
+Sin `MONGODB_URI` guarda en un `data.json` local (usuarios incluidos),
+ideal para practicar. Abre http://localhost:3000.
