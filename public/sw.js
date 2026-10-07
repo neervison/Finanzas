@@ -1,7 +1,7 @@
 // Mis Pagos — Service Worker (permite instalar la app y abrirla rápido)
 // Regla de oro (la misma de PropinasApp): la API /api/ NUNCA se cachea,
 // porque los datos viven en el servidor y deben llegar siempre frescos.
-const CACHE = 'mispagos-v6';
+const CACHE = 'mispagos-v7';
 const BASE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (e) => {

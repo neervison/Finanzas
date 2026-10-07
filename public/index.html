@@ -264,10 +264,14 @@
   .punto{display:inline-block; width:9px; height:9px; border-radius:3px; margin:0 4px 0 10px}
   .punto.ing{background:#059669} .punto.gas{background:#db2777}
   .grafico{display:flex; align-items:stretch; gap:8px; background:#fff; border-radius:20px;
-    box-shadow:var(--sombra-suave); padding:16px 12px 12px; height:185px}
+    box-shadow:var(--sombra-suave); padding:14px 12px 12px}
   .grafico .col{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:7px}
-  .grafico .barras{display:flex; align-items:flex-end; gap:4px; height:125px}
-  .grafico .barra-v{width:14px; height:var(--h); border-radius:6px 6px 3px 3px; animation:subirBarra .8s cubic-bezier(.2,.8,.3,1) both}
+  .grafico .vals{display:flex; flex-direction:column; align-items:center; justify-content:flex-end; min-height:27px}
+  .grafico .v{font-size:10px; font-weight:800; line-height:1.3}
+  .grafico .v.ing{color:#059669} .grafico .v.gas{color:#db2777}
+  .grafico .riel{display:flex; align-items:flex-end; justify-content:center; gap:4px; height:112px;
+    width:100%; max-width:54px; background:#eef0fa; border-radius:12px; padding:5px 4px}
+  .grafico .barra-v{width:13px; height:var(--h); border-radius:5px; animation:subirBarra .8s cubic-bezier(.2,.8,.3,1) both}
   .grafico .barra-v.ing{background:linear-gradient(180deg,#34d399,#059669)}
   .grafico .barra-v.gas{background:linear-gradient(180deg,#f472b6,#db2777)}
   @keyframes subirBarra{from{height:0}}
@@ -301,6 +305,7 @@
   html[data-tema="oscuro"] .accion-btn{background:#26263f; color:var(--texto)}
   html[data-tema="oscuro"] .cat{background:#26263f; color:#c4b5fd}
   html[data-tema="oscuro"] .seccion button{background:#2a2a48; color:#c4b5fd}
+  html[data-tema="oscuro"] .grafico .riel{background:#26263f}
 </style>
 </head>
 <body>
@@ -309,7 +314,7 @@
 <div class="barra">
   <button class="btn-menu" id="btn-menu" title="Menú">☰</button>
   <div class="titulo">Mis Pagos<small id="barra-subtitulo">Vista general</small></div>
-  <div class="version">v8</div>
+  <div class="version">v9</div>
   <button id="btn-tema" title="Modo oscuro / claro">🌙</button>
   <div class="nube" id="nube-estado">📱 Local</div>
 </div>
@@ -376,7 +381,7 @@
       </div>
     </div>
   </div>
-  <div class="pie-login">Desarrollado por <strong>Neervison</strong> · Mis Pagos v8 · 2026</div>
+  <div class="pie-login">Desarrollado por <strong>Neervison</strong> · Mis Pagos v9 · 2026</div>
 </div>
 
 <main>
@@ -508,7 +513,7 @@
   <!-- Pie de página -->
   <footer class="pie">
     <div class="pie-logo">💳 Mis Pagos</div>
-    <div>Desarrollado por <strong>Neervison</strong> · Versión v8 · 2026</div>
+    <div>Desarrollado por <strong>Neervison</strong> · Versión v9 · 2026</div>
   </footer>
 </main>
 
@@ -655,6 +660,13 @@ function guardarPagos(){ localStorage.setItem(clavePagos(), JSON.stringify(pagos
 function guardarGastos(){ localStorage.setItem(claveGastos(), JSON.stringify(gastos)); programarSync(); }
 function guardarIngresos(){ localStorage.setItem(claveIngresos(), JSON.stringify(ingresos)); programarSync(); }
 function plata(n){ return '$' + Math.round(n||0).toLocaleString('es-CL'); }
+// Monto corto para el gráfico: $675k, $1,2M
+function plataCorta(n){
+  n = Math.round(n || 0);
+  if (n >= 1000000) return '$' + (n/1000000).toFixed(1).replace('.', ',').replace(/,0$/, '') + 'M';
+  if (n >= 1000) return '$' + Math.round(n/1000) + 'k';
+  return n ? '$' + n : '';
+}
 function plataBalance(n){ return (n < 0 ? '−' : '') + plata(Math.abs(n)); }
 // Anima un monto contando desde el valor anterior (toque "vivo" de la v6)
 function animarMonto(el, valor, conSigno){
@@ -809,9 +821,13 @@ function renderGeneral(){
   const maxSerie = Math.max(1, ...serie.map(s => Math.max(s.ing, s.gas)));
   document.getElementById('g-grafico').innerHTML = serie.map(s => `
     <div class="col">
-      <div class="barras" title="${nombreMes(s.mes)} · Ingresos ${plata(s.ing)} · Gastos ${plata(s.gas)}">
-        <div class="barra-v ing" style="--h:${s.ing ? Math.max(4, Math.round(s.ing / maxSerie * 100)) : 0}%"></div>
-        <div class="barra-v gas" style="--h:${s.gas ? Math.max(4, Math.round(s.gas / maxSerie * 100)) : 0}%"></div>
+      <div class="vals">
+        <span class="v ing">${s.ing ? plataCorta(s.ing) : ''}</span>
+        <span class="v gas">${s.gas ? plataCorta(s.gas) : ''}</span>
+      </div>
+      <div class="riel" title="${nombreMes(s.mes)} · Ingresos ${plata(s.ing)} · Gastos ${plata(s.gas)}">
+        <div class="barra-v ing" style="--h:${s.ing ? Math.max(5, Math.round(s.ing / maxSerie * 100)) : 0}%"></div>
+        <div class="barra-v gas" style="--h:${s.gas ? Math.max(5, Math.round(s.gas / maxSerie * 100)) : 0}%"></div>
       </div>
       <div class="mes">${MESES[parseInt(s.mes.slice(5,7),10)-1].slice(0,3)}</div>
     </div>`).join('');
