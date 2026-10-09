@@ -54,6 +54,10 @@ servidor, o **📱 Local** sin conexión (sincroniza cuando vuelve).
 - **Ingresos**: anota la **propina de cada día** y el **sueldo**; la Vista
   general separa cuánto vino de propinas y cuánto de sueldo.
 - El botón **+** se adapta a la vista en que estás.
+- **Barra inferior flotante** con las esquinas redondeadas (el mismo diseño
+  de PropinasApp): Inicio, Pagos, el **+** al centro elevado, Gastos y Menú.
+  El menú lateral se abre desde esa barra; la barra superior ya no lleva ☰.
+  Ingresos se entra desde el menú o tocando su tarjeta en la Vista general.
 - **Toques v7**: saludo personal según la hora ("Buenas tardes, [nombre]"),
   gráfico de barras ingresos vs gastos de los últimos 6 meses, animación
   de check al marcar un pago como pagado, botón 🌙 de **modo oscuro** en
