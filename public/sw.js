@@ -9,7 +9,7 @@
 // - Íconos y manifest: caché primero (casi nunca cambian).
 // - Sube el número de CACHE en cada versión para limpiar copias.
 // ============================================================
-const CACHE = 'mispagos-v14';
+const CACHE = 'mispagos-v22';
 const BASE = ['./', 'index.html', 'manifest.json', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', (e) => {

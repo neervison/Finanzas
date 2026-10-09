@@ -79,10 +79,10 @@
   .anillo .lbl{font-size:10.5px; opacity:.85; margin-top:22px}
 
   .stats{display:flex; gap:10px; margin-top:14px}
-  .stat{flex:1; background:#fff; border-radius:18px; box-shadow:var(--sombra-suave); padding:14px 12px; text-align:center}
+  .stat{flex:1; background:#fff; border-radius:18px; box-shadow:var(--sombra-suave); padding:17px 12px; text-align:center}
   .stat .ico{font-size:21px}
-  .stat .val{font-size:16.5px; font-weight:900; margin-top:5px}
-  .stat .lbl{font-size:11px; color:var(--suave); font-weight:700; margin-top:2px}
+  .stat .val{font-size:18.5px; font-weight:900; margin-top:5px}
+  .stat .lbl{font-size:11.5px; color:var(--suave); font-weight:700; margin-top:2px}
 
   .seccion{display:flex; align-items:center; margin:24px 2px 4px}
   .seccion h3{margin:0; font-size:16.5px; font-weight:900}
@@ -173,6 +173,39 @@
     display:flex; align-items:center; justify-content:center; line-height:1}
   .tab-mas:active{transform:translateY(-18px) scale(.95)}
   html[data-tema="oscuro"] .tabbar{background:#171729; border-color:#2c2c4a}
+
+  /* ---------- Diseño vivo (v16) ---------- */
+  /* Fondo ambiental: manchas de color suaves que se mueven detrás de todo */
+  /* (v16) Sin fondo de manchas: Neervison lo rechazó; el fondo queda sereno */
+  @keyframes deriva1{from{transform:translate(0,0) scale(1)} to{transform:translate(-46px,34px) scale(1.12)}}
+  @keyframes deriva2{from{transform:translate(0,0) scale(1)} to{transform:translate(40px,-30px) scale(1.08)}}
+  main{position:relative; z-index:1}
+  /* Logo oficial (v16): imagen "Finanzas que suben" en la barra superior */
+  .logo-chip{flex:0 0 auto; width:40px; height:40px; border-radius:12px; overflow:hidden;
+    background:#F5F2FC; box-shadow:0 6px 14px rgba(109,40,217,.22)}
+  .logo-chip img{width:100%; height:100%; object-fit:cover; display:block}
+  .drawer .cabecera .logo img{width:54px; height:54px; border-radius:15px; display:block; box-shadow:0 6px 16px rgba(109,40,217,.18)}
+  .login-card .logo img{width:78px; height:78px; border-radius:21px; box-shadow:0 10px 24px rgba(109,40,217,.20)}
+  .pie-logo-img{width:20px; height:20px; border-radius:6px; vertical-align:-5px; margin-right:2px}
+  /* El panel general entra en cascada, tarjeta por tarjeta */
+  #vista-general>*{animation:aparecer .5s ease both}
+  #vista-general>*:nth-child(2){animation-delay:.05s}
+  #vista-general>*:nth-child(3){animation-delay:.1s}
+  #vista-general>*:nth-child(4){animation-delay:.15s}
+  #vista-general>*:nth-child(5){animation-delay:.2s}
+  #vista-general>*:nth-child(6){animation-delay:.25s}
+  #vista-general>*:nth-child(7){animation-delay:.3s}
+  /* Pestaña activa de la barra inferior con píldora y un saltito del icono */
+  .tab-item .tico{padding:4px 12px; border-radius:99px; transition:background .2s ease}
+  .tab-item.activo .tico{background:#ede9fe; animation:popIco .3s ease}
+  html[data-tema="oscuro"] .tab-item.activo .tico{background:#2a2a48}
+  @keyframes popIco{0%{transform:scale(.7)} 60%{transform:scale(1.15)} 100%{transform:scale(1)}}
+  /* Un brillo cruza el hero cada pocos segundos */
+  .hero::before{content:''; position:absolute; top:-40%; bottom:-40%; width:90px; left:-140px; transform:rotate(18deg);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent); animation:brilloHero 5.5s ease-in-out infinite}
+  @keyframes brilloHero{0%,55%{left:-140px} 85%,100%{left:115%}}
+  /* El anillo de progreso se llena con movimiento suave */
+  #g-anillo{transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.3,1)}
 
   /* ---------- Hojas inferiores (formularios) ---------- */
   .fondo-modal{display:none; position:fixed; inset:0; background:rgba(20,16,40,.5); z-index:50}
@@ -273,7 +306,7 @@
   /* ============================================================
      v7 — Saludo, gráfico de meses, festejo al pagar y modo oscuro
      ============================================================ */
-  #btn-tema{background:none; border:none; font-size:21px; cursor:pointer; padding:6px}
+  #btn-tema{background:none; border:none; font-size:21px; cursor:pointer; padding:6px; margin-left:auto}
   .saludo{margin-top:16px}
   .saludo .hola{font-size:21px; font-weight:900}
   .saludo .fecha{color:var(--suave); font-size:13.5px; margin-top:2px; text-transform:capitalize}
@@ -323,36 +356,123 @@
   html[data-tema="oscuro"] .cat{background:#26263f; color:#c4b5fd}
   html[data-tema="oscuro"] .seccion button{background:#2a2a48; color:#c4b5fd}
   html[data-tema="oscuro"] .grafico .riel{background:#26263f}
+
+  /* ---------- Íconos SVG profesionales (v21) ---------- */
+  .ic{width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto}
+  .tab-item .tico .ic{width:23px; height:23px}
+  .drawer nav .ico .ic{width:20px; height:20px; vertical-align:-4px}
+  .stat .ico .ic{width:30px; height:30px}
+  .mini .icono .ic, .pago .icono .ic{width:22px; height:22px}
+  .pago .icono{width:47px; height:47px; border-radius:13px}
+  .pago .icono .ic{width:25px; height:25px}
+  .grande .ic{width:54px; height:54px; stroke-width:1.5}
+  .titulo-vista .ic{width:25px; height:25px; vertical-align:-5px}
+  .seccion h3 .ic{width:18px; height:18px; vertical-align:-3px}
+  .accion-btn .ico .ic{width:25px; height:25px}
+  .btn-chico .ic{width:15px; height:15px; vertical-align:-2px}
+  .saludo .hola .ic{width:22px; height:22px; vertical-align:-4px}
+  .alerta .ic{width:16px; height:16px; vertical-align:-3px}
+  #btn-tema .ic{width:22px; height:22px; vertical-align:-4px}
+  .barra-cat .ic{width:16px; height:16px; vertical-align:-3px}
+  .cat .ic{width:14px; height:14px; vertical-align:-2px}
+  .balance .lbl .ic{width:18px; height:18px; vertical-align:-3px}
+  #admin-restablecer .ic{width:16px; height:16px; vertical-align:-3px}
+
+  /* ---------- Modo compra (v22): lista con suma en vivo ---------- */
+  .compra-total{background:linear-gradient(135deg,var(--violeta),var(--rosado)); color:#fff; border-radius:20px; padding:18px; text-align:center; box-shadow:var(--sombra-suave); margin-top:6px}
+  .compra-total .lbl{font-size:12px; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; opacity:.85}
+  .compra-total .monto{font-size:38px; font-weight:900; margin:4px 0 2px}
+  .compra-total .detalle{font-size:13px; opacity:.9}
+  .compra-form{background:var(--tarjeta); border-radius:18px; box-shadow:var(--sombra-suave); padding:14px; margin-top:12px}
+  .compra-form input{width:100%; padding:12px; border:1.5px solid #e6e1f2; border-radius:12px; font-size:15px; margin-bottom:10px; background:#fbfafc; color:inherit}
+  .compra-fila{display:flex; gap:8px}
+  .compra-fila input{margin-bottom:0}
+  #compra-precio{flex:1.4}
+  #compra-cant{flex:.55; text-align:center}
+  #compra-agregar{flex:1; border:none; border-radius:12px; background:var(--violeta); color:#fff; font-weight:800; font-size:15px; cursor:pointer; padding:12px}
+  .compra-item{display:flex; align-items:center; gap:10px; background:var(--tarjeta); border-radius:14px; box-shadow:var(--sombra-suave); padding:11px 13px; margin-top:8px}
+  .compra-item .nom{flex:1; font-weight:700; font-size:14.5px; min-width:0}
+  .compra-item .nom small{display:block; color:var(--suave); font-weight:600; font-size:12px}
+  .compra-item .sub{font-weight:900; font-size:15px}
+  .compra-item .x{border:none; background:#fdecec; color:#dc2626; width:30px; height:30px; border-radius:9px; font-size:14px; cursor:pointer; flex:0 0 auto}
+  .compra-acciones{margin-top:16px; display:flex; flex-direction:column; gap:8px}
+  .btn-finalizar{border:none; border-radius:14px; background:#16a34a; color:#fff; font-weight:800; font-size:15.5px; padding:14px; cursor:pointer}
+  .btn-vaciar{border:none; border-radius:14px; background:#f1f2f8; color:var(--suave); font-weight:700; font-size:14px; padding:12px; cursor:pointer}
+  .btn-modo-compra{display:flex; align-items:center; gap:9px; width:100%; border:none; border-radius:14px; background:#ede9fe; color:var(--morado); font-weight:800; font-size:15px; padding:13px 15px; cursor:pointer; margin-top:12px}
 </style>
 </head>
 <body>
+<!-- Íconos profesionales SVG (v21): reemplazan a los emojis en toda la app -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+    <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M13 16H8"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></symbol>
+    <symbol id="i-banknote" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></symbol>
+    <symbol id="i-coins" viewBox="0 0 24 24"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+    <symbol id="i-sunset" viewBox="0 0 24 24"><path d="M12 9V2"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="M19.07 10.93l-1.41 1.41"/><path d="M22 22H2"/><path d="m16 6-4 4-4-4"/><path d="M16 18a4 4 0 0 0-8 0"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+    <symbol id="i-scale" viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 4.17-2.65 17 17 0 0 1 11.66 0A15 15 0 0 1 22 8.82"/><path d="M5 12.859a10 10 0 0 1 14 0"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></symbol>
+    <symbol id="i-clapper" viewBox="0 0 24 24"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z"/><path d="m6.2 5.3 3.1 3.9"/><path d="m12.4 3.4 3.1 4"/><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></symbol>
+    <symbol id="i-package" viewBox="0 0 24 24"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><path d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></symbol>
+    <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
+    <symbol id="i-utensils" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></symbol>
+    <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></symbol>
+    <symbol id="i-car" viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></symbol>
+    <symbol id="i-store" viewBox="0 0 24 24"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-1.5 2 1.5 2-4.5.5 1h5.27"/></symbol>
+    <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></symbol>
+    <symbol id="i-shirt" viewBox="0 0 24 24"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></symbol>
+  </defs>
+</svg>
+
+
+<!-- v16: sin fondo ambiental (quitado a pedido de Neervison) -->
 
 <!-- Barra superior (v14: sin ☰ arriba; el menú se abre desde la barra inferior) -->
 <div class="barra">
+  <div class="logo-chip"><img src="icon-192.png" alt="Mis Pagos"></div>
   <div class="titulo">Mis Pagos<small id="barra-subtitulo">Vista general</small></div>
-  <div class="version">v14</div>
-  <button id="btn-tema" title="Modo oscuro / claro">🌙</button>
-  <div class="nube" id="nube-estado">📱 Local</div>
+  <!-- v17: sin chip de versión en pantalla (a pedido de Neervison) -->
+  <button id="btn-tema" title="Modo oscuro / claro"><svg class="ic"><use href="#i-moon"/></svg></button>
+  <!-- v20: sin aviso "Nube / Local" en pantalla; la barra NO va centrada (queda como estaba, a la izquierda) -->
 </div>
 
 <!-- Menú hamburguesa -->
 <div class="drawer-fondo" id="drawer-fondo"></div>
 <aside class="drawer" id="drawer">
   <div class="cabecera">
-    <div class="logo">💳</div>
+    <div class="logo"><img src="icon-192.png" alt="Mis Pagos"></div>
     <h2>Mis Pagos</h2>
     <p id="drawer-usuario">Tus tarjetas, cuentas y gastos en un solo lugar</p>
   </div>
   <nav>
-    <button data-vista="general" class="activo"><span class="ico">🏠</span> Vista general</button>
-    <button data-vista="pagos"><span class="ico">🧾</span> Pagos</button>
-    <button data-vista="gastos"><span class="ico">💸</span> Gastos del mes</button>
-    <button data-vista="ingresos"><span class="ico">💰</span> Ingresos</button>
-    <button data-vista="admin" id="nav-admin" style="display:none"><span class="ico">👥</span> Usuarios registrados</button>
+    <button data-vista="general" class="activo"><span class="ico"><svg class="ic"><use href="#i-home"/></svg></span> Vista general</button>
+    <button data-vista="pagos"><span class="ico"><svg class="ic"><use href="#i-receipt"/></svg></span> Pagos</button>
+    <button data-vista="gastos"><span class="ico"><svg class="ic"><use href="#i-wallet"/></svg></span> Gastos del mes</button>
+    <button data-vista="ingresos"><span class="ico"><svg class="ic"><use href="#i-banknote"/></svg></span> Ingresos</button>
+    <button data-vista="admin" id="nav-admin" style="display:none"><span class="ico"><svg class="ic"><use href="#i-users"/></svg></span> Usuarios registrados</button>
     <div class="separador"></div>
-    <button id="nav-exportar"><span class="ico">⬇️</span> Respaldar datos</button>
-    <button id="nav-importar"><span class="ico">⬆️</span> Restaurar respaldo</button>
-    <button id="nav-salir"><span class="ico">🚪</span> Cerrar sesión</button>
+    <button id="nav-exportar"><span class="ico"><svg class="ic"><use href="#i-download"/></svg></span> Respaldar datos</button>
+    <button id="nav-importar"><span class="ico"><svg class="ic"><use href="#i-upload"/></svg></span> Restaurar respaldo</button>
+    <button id="nav-salir"><span class="ico"><svg class="ic"><use href="#i-logout"/></svg></span> Cerrar sesión</button>
   </nav>
   <div class="pie">Tus datos quedan guardados en este teléfono. Baja un respaldo de vez en cuando.</div>
 </aside>
@@ -361,7 +481,7 @@
 <!-- Pantalla de ingreso / registro (se muestra sin sesión) -->
 <div class="login-wrap" id="pantalla-login" style="display:none">
   <div class="login-card">
-    <div class="logo">💳</div>
+    <div class="logo"><img src="icon-192.png" alt="Mis Pagos"></div>
     <h1>Mis Pagos</h1>
     <div class="sub">Tus tarjetas, cuentas y gastos, guardados en la nube</div>
 
@@ -397,7 +517,7 @@
       </div>
     </div>
   </div>
-  <div class="pie-login">Desarrollado por <strong>Neervison</strong> · Mis Pagos v14 · 2026</div>
+  <div class="pie-login">Desarrollado por <strong>Neervison</strong> · Mis Pagos · 2026</div>
 </div>
 
 <main>
@@ -427,32 +547,32 @@
     </div>
 
     <div class="stats">
-      <div class="stat"><div class="ico">💸</div><div class="val" id="g-stat-gastos">$0</div><div class="lbl">Gastos del mes</div></div>
-      <div class="stat" data-ir="ingresos" style="cursor:pointer"><div class="ico">💰</div><div class="val" id="g-stat-ingresos">$0</div><div class="lbl">Ingresos del mes</div></div>
-      <div class="stat"><div class="ico">⚠️</div><div class="val" id="g-stat-vencidos">0</div><div class="lbl">Vencidos</div></div>
+      <div class="stat"><div class="ico"><svg class="ic"><use href="#i-wallet"/></svg></div><div class="val" id="g-stat-gastos">$0</div><div class="lbl">Gastos del mes</div></div>
+      <div class="stat" data-ir="ingresos" style="cursor:pointer"><div class="ico"><svg class="ic"><use href="#i-banknote"/></svg></div><div class="val" id="g-stat-ingresos">$0</div><div class="lbl">Ingresos del mes</div></div>
+      <div class="stat"><div class="ico"><svg class="ic"><use href="#i-alert"/></svg></div><div class="val" id="g-stat-vencidos">0</div><div class="lbl">Vencidos</div></div>
     </div>
 
     <div class="balance" id="g-balance-card">
-      <div class="top"><span class="lbl">⚖️ Balance del mes</span><span class="val pos" id="g-balance">$0</span></div>
+      <div class="top"><span class="lbl"><svg class="ic"><use href="#i-scale"/></svg> Balance del mes</span><span class="val pos" id="g-balance">$0</span></div>
       <div class="detalle" id="g-balance-detalle">Ingresos $0 · Gastos $0</div>
     </div>
 
-    <div class="seccion"><h3>📊 Ingresos vs gastos</h3><span class="leyenda"><i class="punto ing"></i>Ingresos<i class="punto gas"></i>Gastos</span></div>
+    <div class="seccion"><h3><svg class="ic"><use href="#i-chart"/></svg> Ingresos vs gastos</h3><span class="leyenda"><i class="punto ing"></i>Ingresos<i class="punto gas"></i>Gastos</span></div>
     <div class="grafico" id="g-grafico"></div>
 
     <div class="seccion"><h3>⏰ Próximos vencimientos</h3><button data-ir="pagos">Ver todos</button></div>
     <div id="g-proximos"></div>
 
-    <div class="seccion"><h3>📊 Gastos por categoría</h3><button data-ir="gastos">Ver gastos</button></div>
+    <div class="seccion"><h3><svg class="ic"><use href="#i-chart"/></svg> Gastos por categoría</h3><button data-ir="gastos">Ver gastos</button></div>
     <div id="g-categorias"></div>
 
-    <div class="seccion"><h3>🧾 Últimos gastos</h3><button data-ir="gastos">Ver todos</button></div>
+    <div class="seccion"><h3><svg class="ic"><use href="#i-receipt"/></svg> Últimos gastos</h3><button data-ir="gastos">Ver todos</button></div>
     <div id="g-ultimos"></div>
   </section>
 
   <!-- ============ VISTA PAGOS ============ -->
   <section id="vista-pagos" style="display:none">
-    <h2 class="titulo-vista">🧾 Pagos</h2>
+    <h2 class="titulo-vista"><svg class="ic"><use href="#i-receipt"/></svg> Pagos</h2>
     <p class="subtitulo-vista">Tus tarjetas, servicios y cuentas de cada mes</p>
     <div class="alerta" id="alerta-pagos"></div>
     <div class="filtros">
@@ -470,7 +590,7 @@
 
   <!-- ============ VISTA GASTOS ============ -->
   <section id="vista-gastos" style="display:none">
-    <h2 class="titulo-vista">💸 Gastos del mes</h2>
+    <h2 class="titulo-vista"><svg class="ic"><use href="#i-wallet"/></svg> Gastos del mes</h2>
     <p class="subtitulo-vista">Lo que vas gastando, anotado al momento</p>
     <div class="mes-nav">
       <button id="gasto-mes-prev">‹</button>
@@ -482,16 +602,46 @@
       <div class="detalle" id="gasto-detalle">Sin gastos este mes</div>
       <div class="cat-chips" id="gasto-categorias"></div>
     </div>
+    <button class="btn-modo-compra" id="btn-modo-compra" type="button"><svg class="ic"><use href="#i-cart"/></svg> Modo compra — suma mientras compras</button>
     <div id="lista-gastos"></div>
     <div class="vacio" id="vacio-gastos" style="display:none">
-      <div class="grande">💸</div>
+      <div class="grande"><svg class="ic"><use href="#i-wallet"/></svg></div>
       <p><strong>Sin gastos registrados este mes.</strong><br>Toca el botón + para anotar el primero.</p>
+    </div>
+  </section>
+
+
+  <!-- ============ VISTA MODO COMPRA (v22) ============ -->
+  <section id="vista-compra" style="display:none">
+    <h2 class="titulo-vista"><svg class="ic"><use href="#i-cart"/></svg> Modo compra</h2>
+    <p class="subtitulo-vista">Anota cada producto y mira cuánto llevas mientras compras</p>
+    <div class="compra-total">
+      <div class="lbl">Llevas en esta compra</div>
+      <div class="monto" id="compra-total">$0</div>
+      <div class="detalle" id="compra-detalle">0 productos</div>
+    </div>
+    <div class="compra-form">
+      <input id="compra-nombre" type="text" placeholder="Producto (ej: Arroz 1 kg)" autocomplete="off">
+      <div class="compra-fila">
+        <input id="compra-precio" type="number" inputmode="numeric" min="0" placeholder="Precio $">
+        <input id="compra-cant" type="number" inputmode="numeric" min="1" value="1" title="Cantidad">
+        <button id="compra-agregar" type="button">Agregar</button>
+      </div>
+    </div>
+    <div id="lista-compra"></div>
+    <div class="vacio" id="vacio-compra">
+      <div class="grande"><svg class="ic"><use href="#i-cart"/></svg></div>
+      <p><strong>Tu lista está vacía.</strong><br>Escribe el primer producto y su precio.</p>
+    </div>
+    <div class="compra-acciones" id="compra-acciones" style="display:none">
+      <button class="btn-finalizar" id="compra-finalizar" type="button">Finalizar y guardar en Gastos</button>
+      <button class="btn-vaciar" id="compra-vaciar" type="button">Vaciar lista</button>
     </div>
   </section>
 
   <!-- ============ VISTA INGRESOS ============ -->
   <section id="vista-ingresos" style="display:none">
-    <h2 class="titulo-vista">💰 Ingresos</h2>
+    <h2 class="titulo-vista"><svg class="ic"><use href="#i-banknote"/></svg> Ingresos</h2>
     <p class="subtitulo-vista">La propina de cada día, tu sueldo y otros ingresos</p>
     <div class="mes-nav">
       <button id="ingreso-mes-prev">‹</button>
@@ -505,43 +655,43 @@
     </div>
     <div id="lista-ingresos"></div>
     <div class="vacio" id="vacio-ingresos" style="display:none">
-      <div class="grande">💰</div>
+      <div class="grande"><svg class="ic"><use href="#i-banknote"/></svg></div>
       <p><strong>Sin ingresos registrados este mes.</strong><br>Toca el botón + y anota la propina de hoy.</p>
     </div>
   </section>
 
   <!-- ============ VISTA ADMINISTRADOR ============ -->
   <section id="vista-admin" style="display:none">
-    <h2 class="titulo-vista">👥 Usuarios registrados</h2>
+    <h2 class="titulo-vista"><svg class="ic"><use href="#i-users"/></svg> Usuarios registrados</h2>
     <p class="subtitulo-vista">Las personas que crearon su cuenta en Mis Pagos</p>
     <div id="admin-lista"></div>
     <div id="admin-detalle" style="display:none">
       <div class="seccion"><h3 id="admin-detalle-titulo">Registros</h3><button id="admin-volver">← Volver</button></div>
-      <div class="seccion"><button id="admin-restablecer">🔑 Restablecer clave de este usuario</button></div>
+      <div class="seccion"><button id="admin-restablecer"><svg class="ic"><use href="#i-key"/></svg> Restablecer clave de este usuario</button></div>
       <p class="subtitulo-vista">Si olvidó su clave, ponle una temporal y pásasela; sus sesiones abiertas se cierran solas.</p>
-      <div class="seccion"><h3>🧾 Sus pagos</h3></div>
+      <div class="seccion"><h3><svg class="ic"><use href="#i-receipt"/></svg> Sus pagos</h3></div>
       <div id="admin-detalle-pagos"></div>
-      <div class="seccion"><h3>💸 Sus gastos</h3></div>
+      <div class="seccion"><h3><svg class="ic"><use href="#i-wallet"/></svg> Sus gastos</h3></div>
       <div id="admin-detalle-gastos"></div>
-      <div class="seccion"><h3>💰 Sus ingresos</h3></div>
+      <div class="seccion"><h3><svg class="ic"><use href="#i-banknote"/></svg> Sus ingresos</h3></div>
       <div id="admin-detalle-ingresos"></div>
     </div>
   </section>
 
   <!-- Pie de página -->
   <footer class="pie">
-    <div class="pie-logo">💳 Mis Pagos</div>
-    <div>Desarrollado por <strong>Neervison</strong> · Versión v14 · 2026</div>
+    <div class="pie-logo"><img class="pie-logo-img" src="icon-192.png" alt=""> Mis Pagos</div>
+    <div>Desarrollado por <strong>Neervison</strong> · 2026</div>
   </footer>
 </main>
 
 <!-- Barra inferior flotante (v14): el + del centro conserva el id btn-agregar -->
 <nav class="tabbar" id="tabbar" style="display:none">
-  <button class="tab-item" data-vista="general"><span class="tico">🏠</span>Inicio</button>
-  <button class="tab-item" data-vista="pagos"><span class="tico">🧾</span>Pagos</button>
+  <button class="tab-item" data-vista="general"><span class="tico"><svg class="ic"><use href="#i-home"/></svg></span>Inicio</button>
+  <button class="tab-item" data-vista="pagos"><span class="tico"><svg class="ic"><use href="#i-receipt"/></svg></span>Pagos</button>
   <button class="tab-mas" id="btn-agregar" title="Agregar"><span>+</span></button>
-  <button class="tab-item" data-vista="gastos"><span class="tico">💸</span>Gastos</button>
-  <button class="tab-item" id="tab-menu"><span class="tico">☰</span>Menú</button>
+  <button class="tab-item" data-vista="gastos"><span class="tico"><svg class="ic"><use href="#i-wallet"/></svg></span>Gastos</button>
+  <button class="tab-item" id="tab-menu"><span class="tico"><svg class="ic"><use href="#i-menu"/></svg></span>Menú</button>
 </nav>
 
 <!-- Festejo al marcar un pago como pagado -->
@@ -556,9 +706,10 @@
 <div class="fondo-modal" id="fondo-modal"></div>
 <div class="hoja" id="hoja-accion">
   <h2>¿Qué quieres agregar?</h2>
-  <button class="accion-btn" id="accion-pago"><span class="ico">🧾</span><span>Un pago<small>Tarjeta, servicio o cuenta de cada mes</small></span></button>
-  <button class="accion-btn" id="accion-gasto"><span class="ico">💸</span><span>Un gasto<small>Algo que gastaste hoy o este mes</small></span></button>
-  <button class="accion-btn" id="accion-ingreso"><span class="ico">💰</span><span>Un ingreso<small>La propina de hoy, tu sueldo u otro ingreso</small></span></button>
+  <button class="accion-btn" id="accion-pago"><span class="ico"><svg class="ic"><use href="#i-receipt"/></svg></span><span>Un pago<small>Tarjeta, servicio o cuenta de cada mes</small></span></button>
+  <button class="accion-btn" id="accion-gasto"><span class="ico"><svg class="ic"><use href="#i-wallet"/></svg></span><span>Un gasto<small>Algo que gastaste hoy o este mes</small></span></button>
+  <button class="accion-btn" id="accion-ingreso"><span class="ico"><svg class="ic"><use href="#i-banknote"/></svg></span><span>Un ingreso<small>La propina de hoy, tu sueldo u otro ingreso</small></span></button>
+  <button class="accion-btn" id="accion-compra"><span class="ico"><svg class="ic"><use href="#i-cart"/></svg></span><span>Compra en el mercado<small>Anota productos y ve el total mientras compras</small></span></button>
   <button class="cancelar" id="btn-cancelar-accion">Cancelar</button>
 </div>
 
@@ -567,28 +718,28 @@
   <h2 id="titulo-formulario">Agregar pago</h2>
   <label style="margin-top:0">Agregar rápido: servicios y cuentas</label>
   <div class="rapidos" id="rapidos">
-    <button type="button" data-tipo="tarjeta" data-nombre="Tarjeta de crédito">💳 Tarjeta</button>
-    <button type="button" data-tipo="luz" data-nombre="Luz">💡 Luz</button>
-    <button type="button" data-tipo="agua" data-nombre="Agua">💧 Agua</button>
-    <button type="button" data-tipo="gas" data-nombre="Gas">🔥 Gas</button>
-    <button type="button" data-tipo="internet" data-nombre="Internet">📶 Internet</button>
-    <button type="button" data-tipo="celular" data-nombre="Celular">📱 Celular</button>
-    <button type="button" data-tipo="arriendo" data-nombre="Arriendo">🏠 Arriendo</button>
-    <button type="button" data-tipo="suscripcion" data-nombre="Suscripción">🎬 Suscripción</button>
+    <button type="button" data-tipo="tarjeta" data-nombre="Tarjeta de crédito"><svg class="ic"><use href="#i-card"/></svg> Tarjeta</button>
+    <button type="button" data-tipo="luz" data-nombre="Luz"><svg class="ic"><use href="#i-bulb"/></svg> Luz</button>
+    <button type="button" data-tipo="agua" data-nombre="Agua"><svg class="ic"><use href="#i-drop"/></svg> Agua</button>
+    <button type="button" data-tipo="gas" data-nombre="Gas"><svg class="ic"><use href="#i-flame"/></svg> Gas</button>
+    <button type="button" data-tipo="internet" data-nombre="Internet"><svg class="ic"><use href="#i-wifi"/></svg> Internet</button>
+    <button type="button" data-tipo="celular" data-nombre="Celular"><svg class="ic"><use href="#i-phone"/></svg> Celular</button>
+    <button type="button" data-tipo="arriendo" data-nombre="Arriendo"><svg class="ic"><use href="#i-home"/></svg> Arriendo</button>
+    <button type="button" data-tipo="suscripcion" data-nombre="Suscripción"><svg class="ic"><use href="#i-clapper"/></svg> Suscripción</button>
   </div>
   <label>Nombre</label>
   <input id="campo-nombre" type="text" placeholder="Ej: Visa Santander">
   <label>Tipo</label>
   <select id="campo-tipo">
-    <option value="tarjeta">💳 Tarjeta de crédito</option>
-    <option value="luz">💡 Luz</option>
-    <option value="agua">💧 Agua</option>
-    <option value="gas">🔥 Gas</option>
-    <option value="internet">📶 Internet</option>
-    <option value="celular">📱 Celular</option>
-    <option value="arriendo">🏠 Arriendo</option>
-    <option value="suscripcion">🎬 Suscripción</option>
-    <option value="otro">🧾 Otro</option>
+    <option value="tarjeta">Tarjeta de crédito</option>
+    <option value="luz">Luz</option>
+    <option value="agua">Agua</option>
+    <option value="gas">Gas</option>
+    <option value="internet">Internet</option>
+    <option value="celular">Celular</option>
+    <option value="arriendo">Arriendo</option>
+    <option value="suscripcion">Suscripción</option>
+    <option value="otro">Otro</option>
   </select>
   <label>Día de pago de cada mes</label>
   <input id="campo-dia" type="number" min="1" max="31" placeholder="Ej: 21">
@@ -609,14 +760,14 @@
   <input id="campo-g-monto" type="number" min="0" step="100" placeholder="Ej: 8500">
   <label>Categoría</label>
   <select id="campo-g-categoria">
-    <option value="comida">🍔 Comida</option>
-    <option value="supermercado">🛒 Supermercado</option>
-    <option value="transporte">🚌 Transporte</option>
-    <option value="local">🏪 Local / negocio</option>
-    <option value="salud">💊 Salud</option>
-    <option value="ocio">🎉 Ocio</option>
-    <option value="ropa">👕 Ropa</option>
-    <option value="otro">📦 Otro</option>
+    <option value="comida">Comida</option>
+    <option value="supermercado">Supermercado</option>
+    <option value="transporte">Transporte</option>
+    <option value="local">Local / negocio</option>
+    <option value="salud">Salud</option>
+    <option value="ocio">Ocio</option>
+    <option value="ropa">Ropa</option>
+    <option value="otro">Otro</option>
   </select>
   <label>Fecha</label>
   <input id="campo-g-fecha" type="date">
@@ -629,9 +780,9 @@
   <h2>Agregar ingreso</h2>
   <label>Tipo de ingreso</label>
   <select id="campo-i-tipo">
-    <option value="propina">💰 Propina del día</option>
-    <option value="sueldo">💵 Sueldo</option>
-    <option value="otro">📦 Otro ingreso</option>
+    <option value="propina">Propina del día</option>
+    <option value="sueldo">Sueldo</option>
+    <option value="otro">Otro ingreso</option>
   </select>
   <label>Monto ($)</label>
   <input id="campo-i-monto" type="number" min="0" step="100" placeholder="Ej: 25000">
@@ -658,6 +809,7 @@ try { sesion = JSON.parse(localStorage.getItem(CLAVE_SESION)) || null; } catch(e
 function clavePagos(){ return 'mispagos_v1_' + (sesion ? sesion.usuario.id : 'anon'); }
 function claveGastos(){ return 'mispagos_gastos_v1_' + (sesion ? sesion.usuario.id : 'anon'); }
 function claveIngresos(){ return 'mispagos_ingresos_v1_' + (sesion ? sesion.usuario.id : 'anon'); }
+function claveCompra(){ return 'mispagos_compra_v1_' + (sesion ? sesion.usuario.id : 'anon'); }
 function authHeaders(){ return sesion ? { 'Authorization': 'Bearer ' + sesion.token } : {}; }
 let pagos = cargarPagos();
 let gastos = cargarGastos();
@@ -669,13 +821,14 @@ let vistaActual = 'general';     // general | pagos | gastos
 let mesVer = claveMesActual();
 
 const COLORES = ['#6d28d9','#2563eb','#059669','#dc2626','#ea580c','#db2777','#0891b2','#111827'];
-const ICONOS = { tarjeta:'💳', luz:'💡', agua:'💧', gas:'🔥', internet:'📶', celular:'📱', arriendo:'🏠', suscripcion:'🎬', otro:'🧾' };
-const G_ICONOS = { comida:'🍔', supermercado:'🛒', transporte:'🚌', local:'🏪', salud:'💊', ocio:'🎉', ropa:'👕', otro:'📦' };
+const IC = id => '<svg class="ic"><use href="#' + id + '"/></svg>';
+const ICONOS = { tarjeta:IC('i-card'), luz:IC('i-bulb'), agua:IC('i-drop'), gas:IC('i-flame'), internet:IC('i-wifi'), celular:IC('i-phone'), arriendo:IC('i-home'), suscripcion:IC('i-clapper'), otro:IC('i-receipt') };
+const G_ICONOS = { comida:IC('i-utensils'), supermercado:IC('i-cart'), transporte:IC('i-car'), local:IC('i-store'), salud:IC('i-heart'), ocio:IC('i-ticket'), ropa:IC('i-shirt'), otro:IC('i-package') };
 const G_NOMBRES = { comida:'Comida', supermercado:'Supermercado', transporte:'Transporte', local:'Local / negocio', salud:'Salud', ocio:'Ocio', ropa:'Ropa', otro:'Otro' };
-const I_ICONOS = { propina:'💰', sueldo:'💵', otro:'📦' };
+const I_ICONOS = { propina:IC('i-coins'), sueldo:IC('i-briefcase'), otro:IC('i-package') };
 const I_NOMBRES = { propina:'Propina', sueldo:'Sueldo', otro:'Otro ingreso' };
 const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-const SUBTITULOS = { general:'Vista general', pagos:'Pagos', gastos:'Gastos del mes', ingresos:'Ingresos', admin:'Usuarios registrados' };
+const SUBTITULOS = { general:'Vista general', pagos:'Pagos', gastos:'Gastos del mes', ingresos:'Ingresos', admin:'Usuarios registrados', compra:'Modo compra' };
 
 /* ---------- Utilidades ---------- */
 function cargarPagos(){ try{ return JSON.parse(localStorage.getItem(clavePagos())) || []; }catch(e){ return []; } }
@@ -762,13 +915,13 @@ function pintarAlertas(pendientes){
   const prontos = pendientes.filter(x => x.e.estado === 'pronto').length;
   let txt = '';
   if (vencidos + prontos > 0){
-    txt = '⚠️ ';
+    txt = IC('i-alert') + ' ';
     if (vencidos) txt += 'Tienes ' + vencidos + (vencidos===1 ? ' pago vencido' : ' pagos vencidos') + '. ';
     if (prontos) txt += prontos + (prontos===1 ? ' vence' : ' vencen') + ' en los próximos 3 días.';
   }
   ['alerta-general','alerta-pagos'].forEach(id => {
     const el = document.getElementById(id);
-    el.textContent = txt;
+    el.innerHTML = txt;
     el.classList.toggle('visible', !!txt);
   });
 }
@@ -779,7 +932,7 @@ function pintarSaludo(){
   if (!sesion) return;
   const ahora = new Date(), h = ahora.getHours();
   const saludo = h < 12 ? 'Buenos días' : h < 20 ? 'Buenas tardes' : 'Buenas noches';
-  const emoji = h < 12 ? '☀️' : h < 20 ? '🌇' : '🌙';
+  const emoji = h < 12 ? IC('i-sun') : h < 20 ? IC('i-sunset') : IC('i-moon');
   const primerNombre = (sesion.usuario.nombre || '').trim().split(' ')[0];
   const fecha = ahora.toLocaleDateString('es-CL', { weekday:'long', day:'numeric', month:'long' });
   document.getElementById('g-saludo').innerHTML =
@@ -817,16 +970,16 @@ function renderGeneral(){
   document.getElementById('g-mes').textContent = 'Resumen de ' + nombreMes(mes);
   animarMonto(document.getElementById('g-total-pagar'), pendientes.reduce((s,x) => s + (x.pago.monto||0), 0));
   document.getElementById('g-pendientes-detalle').textContent =
-    pendientes.length === 0 ? 'Nada pendiente 🎉' : pendientes.length + (pendientes.length===1 ? ' pago pendiente' : ' pagos pendientes');
+    pendientes.length === 0 ? 'Nada pendiente' : pendientes.length + (pendientes.length===1 ? ' pago pendiente' : ' pagos pendientes');
   const pct = conEstado.length ? Math.round(pagados.length / conEstado.length * 100) : 0;
   document.getElementById('g-pct').textContent = pct + '%';
   document.getElementById('g-anillo').style.strokeDashoffset = (226.2 * (1 - pct/100)).toFixed(1);
-  document.getElementById('g-stat-gastos').textContent = plata(gastosMes.reduce((s,g) => s + (g.monto||0), 0));
+  animarMonto(document.getElementById('g-stat-gastos'), gastosMes.reduce((s,g) => s + (g.monto||0), 0));
   // Ingresos del mes y balance (ingresos − gastos)
   const ingresosMes = ingresos.filter(i => i.fecha.slice(0,7) === mes);
   const totalIngresos = ingresosMes.reduce((s,i) => s + (i.monto||0), 0);
   const totalGastos = gastosMes.reduce((s,g) => s + (g.monto||0), 0);
-  document.getElementById('g-stat-ingresos').textContent = plata(totalIngresos);
+  animarMonto(document.getElementById('g-stat-ingresos'), totalIngresos);
   const balance = totalIngresos - totalGastos;
   const balEl = document.getElementById('g-balance');
   animarMonto(balEl, balance, true);
@@ -863,13 +1016,13 @@ function renderGeneral(){
   const prox = pendientes.slice(0, 4);
   document.getElementById('g-proximos').innerHTML = prox.length ? prox.map(({pago:p, e}) => `
     <div class="mini" style="--color:${p.color}">
-      <div class="icono">${ICONOS[p.tipo] || '🧾'}</div>
+      <div class="icono">${ICONOS[p.tipo] || IC('i-receipt')}</div>
       <div class="info"><div class="nombre">${escapar(p.nombre)}</div>
       <div class="cuando">Vence el ${fechaCorta(e.vence)}</div></div>
       <div style="text-align:right"><div class="monto">${plata(p.monto)}</div>
       <div class="chip ${e.estado}" style="margin-top:4px; display:inline-block">${textoChip(e)}</div></div>
     </div>`).join('')
-    : '<div class="vacio-seccion">No tienes vencimientos pendientes 🎉</div>';
+    : '<div class="vacio-seccion">No tienes vencimientos pendientes</div>';
 
   // Gastos por categoría del mes: barras proporcionales
   const porCat = {};
@@ -877,7 +1030,7 @@ function renderGeneral(){
   const cats = Object.entries(porCat).sort((a,b) => b[1]-a[1]).slice(0, 4);
   const maxCat = cats.length ? cats[0][1] : 0;
   document.getElementById('g-categorias').innerHTML = cats.length ? '<div class="barras">' + cats.map(([c,v]) => `
-    <div class="barra-cat"><div class="top"><span>${G_ICONOS[c]||'📦'} ${G_NOMBRES[c]||c}</span><span class="v">${plata(v)}</span></div>
+    <div class="barra-cat"><div class="top"><span>${G_ICONOS[c]||IC('i-package')} ${G_NOMBRES[c]||c}</span><span class="v">${plata(v)}</span></div>
     <div class="track"><div class="fill" style="width:${Math.max(6, Math.round(v/maxCat*100))}%"></div></div></div>`).join('') + '</div>'
     : '<div class="vacio-seccion">Aún no anotas gastos este mes</div>';
 
@@ -885,7 +1038,7 @@ function renderGeneral(){
   const ultimos = [...gastos].sort((a,b) => (b.fecha + b.id).localeCompare(a.fecha + a.id)).slice(0, 4);
   document.getElementById('g-ultimos').innerHTML = ultimos.length ? ultimos.map(g => `
     <div class="mini" style="--color:#6d28d9">
-      <div class="icono">${G_ICONOS[g.categoria]||'📦'}</div>
+      <div class="icono">${G_ICONOS[g.categoria]||IC('i-package')}</div>
       <div class="info"><div class="nombre">${escapar(g.desc)}</div>
       <div class="cuando">${parseInt(g.fecha.slice(8,10),10)} de ${MESES[parseInt(g.fecha.slice(5,7),10)-1]} · ${G_NOMBRES[g.categoria]||''}</div></div>
       <div class="monto">${plata(g.monto)}</div>
@@ -901,14 +1054,14 @@ function renderPagos(){
   document.getElementById('vacio').style.display = pagos.length === 0 ? 'block' : 'none';
   document.getElementById('lista').innerHTML = visibles.map(({pago:p, e}, idx) => `
     <div class="pago anim-in" style="--color:${p.color}; animation-delay:${idx*45}ms">
-      <div class="icono">${ICONOS[p.tipo] || '🧾'}</div>
+      <div class="icono">${ICONOS[p.tipo] || IC('i-receipt')}</div>
       <div class="info">
         <div class="nombre">${escapar(p.nombre)}</div>
         <div class="cuando">${e.estado==='pagado' ? 'Próximo: ' : 'Vence el '}${fechaCorta(e.vence)} · día ${p.dia}</div>
         <div class="acciones">
           <button class="btn-pague" data-accion="pagar" data-id="${p.id}" ${e.estado==='pagado' ? 'disabled' : ''}>${e.estado==='pagado' ? '✓ Pagado' : '✓ Ya pagué'}</button>
-          <button class="btn-chico" data-accion="editar" data-id="${p.id}">✏️</button>
-          <button class="btn-chico" data-accion="borrar" data-id="${p.id}">🗑️</button>
+          <button class="btn-chico" data-accion="editar" data-id="${p.id}"><svg class="ic"><use href="#i-pencil"/></svg></button>
+          <button class="btn-chico" data-accion="borrar" data-id="${p.id}"><svg class="ic"><use href="#i-trash"/></svg></button>
         </div>
       </div>
       <div class="lado">
@@ -958,16 +1111,16 @@ function renderGastos(){
   delMes.forEach(g => { porCat[g.categoria] = (porCat[g.categoria]||0) + (g.monto||0); });
   document.getElementById('gasto-categorias').innerHTML = Object.entries(porCat)
     .sort((a,b) => b[1]-a[1])
-    .map(([c,v]) => `<span class="cat">${G_ICONOS[c]||'📦'} ${G_NOMBRES[c]||c} · ${plata(v)}</span>`).join('');
+    .map(([c,v]) => `<span class="cat">${G_ICONOS[c]||IC('i-package')} ${G_NOMBRES[c]||c} · ${plata(v)}</span>`).join('');
   document.getElementById('vacio-gastos').style.display = delMes.length ? 'none' : 'block';
   document.getElementById('lista-gastos').innerHTML = delMes.map((g, idx) => `
     <div class="pago anim-in" style="--color:#6d28d9; animation-delay:${idx*45}ms">
-      <div class="icono">${G_ICONOS[g.categoria]||'📦'}</div>
+      <div class="icono">${G_ICONOS[g.categoria]||IC('i-package')}</div>
       <div class="info">
         <div class="nombre">${escapar(g.desc)}</div>
         <div class="cuando">${parseInt(g.fecha.slice(8,10),10)} de ${MESES[parseInt(g.fecha.slice(5,7),10)-1]} · ${G_NOMBRES[g.categoria]||''}</div>
         <div class="acciones">
-          <button class="btn-chico" data-gasto-borrar="${g.id}">🗑️ Borrar</button>
+          <button class="btn-chico" data-gasto-borrar="${g.id}"><svg class="ic"><use href="#i-trash"/></svg> Borrar</button>
         </div>
       </div>
       <div class="lado"><div class="monto">${plata(g.monto)}</div></div>
@@ -999,7 +1152,7 @@ document.getElementById('drawer-fondo').addEventListener('click', cerrarMenu);
 /* ---------- 🌙 Modo oscuro (la preferencia queda guardada) ---------- */
 function aplicarIconoTema(){
   const b = document.getElementById('btn-tema');
-  if (b) b.textContent = document.documentElement.dataset.tema === 'oscuro' ? '☀️' : '🌙';
+  if (b) b.innerHTML = document.documentElement.dataset.tema === 'oscuro' ? IC('i-sun') : IC('i-moon');
 }
 document.getElementById('btn-tema').addEventListener('click', () => {
   const oscuro = document.documentElement.dataset.tema !== 'oscuro';
@@ -1010,19 +1163,79 @@ document.getElementById('btn-tema').addEventListener('click', () => {
 });
 aplicarIconoTema();
 
+/* ---------- Modo compra: lista con suma en vivo (v22) ---------- */
+let compra = [];
+function cargarCompra(){ try { compra = JSON.parse(localStorage.getItem(claveCompra()) || '[]'); } catch(e) { compra = []; } }
+function guardarCompra(){ try { localStorage.setItem(claveCompra(), JSON.stringify(compra)); } catch(e) {} }
+function totalCompra(){ return compra.reduce((a,i) => a + (i.precio||0) * (i.cant||1), 0); }
+function pintarCompra(){
+  const n = compra.reduce((a,i) => a + (i.cant||1), 0);
+  document.getElementById('compra-total').textContent = plata(totalCompra());
+  document.getElementById('compra-detalle').textContent = compra.length === 0 ? '0 productos'
+    : n + (n===1 ? ' producto' : ' productos') + ' en ' + compra.length + (compra.length===1 ? ' ítem' : ' ítems');
+  document.getElementById('vacio-compra').style.display = compra.length ? 'none' : 'block';
+  document.getElementById('compra-acciones').style.display = compra.length ? 'flex' : 'none';
+  document.getElementById('lista-compra').innerHTML = compra.map((i, idx) => `
+    <div class="compra-item">
+      <div class="nom">${escapar(i.nombre)}<small>${i.cant} × ${plata(i.precio)}</small></div>
+      <div class="sub">${plata(i.precio * i.cant)}</div>
+      <button class="x" data-compra-borrar="${idx}" title="Quitar">✕</button>
+    </div>`).join('');
+}
+function agregarCompra(){
+  const precio = parseInt(document.getElementById('compra-precio').value, 10);
+  if (!precio || precio <= 0) { document.getElementById('compra-precio').focus(); return; }
+  const nombre = document.getElementById('compra-nombre').value.trim() || 'Producto';
+  const cant = Math.max(1, parseInt(document.getElementById('compra-cant').value, 10) || 1);
+  compra.unshift({ nombre, precio, cant });
+  guardarCompra(); pintarCompra();
+  document.getElementById('compra-nombre').value = '';
+  document.getElementById('compra-precio').value = '';
+  document.getElementById('compra-cant').value = 1;
+  document.getElementById('compra-nombre').focus();
+  if (navigator.vibrate) navigator.vibrate(10);
+}
+function finalizarCompra(){
+  if (!compra.length) return;
+  const total = totalCompra();
+  const hoy = new Date();
+  const fecha = hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(hoy.getDate()).padStart(2,'0');
+  gastos.push({ id:'g' + Date.now(), desc:'Compra en el mercado (' + compra.length + (compra.length===1 ? ' producto' : ' productos') + ')', monto: total, categoria:'supermercado', fecha });
+  guardarGastos();
+  compra = []; guardarCompra(); pintarCompra();
+  cambiarVista('gastos');
+  alert('Compra guardada en Gastos: ' + plata(total));
+}
+document.getElementById('compra-agregar').addEventListener('click', agregarCompra);
+document.getElementById('compra-nombre').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('compra-precio').focus(); });
+document.getElementById('compra-precio').addEventListener('keydown', e => { if (e.key === 'Enter') agregarCompra(); });
+document.getElementById('lista-compra').addEventListener('click', e => {
+  const b = e.target.closest('[data-compra-borrar]');
+  if (!b) return;
+  compra.splice(parseInt(b.dataset.compraBorrar, 10), 1);
+  guardarCompra(); pintarCompra();
+});
+document.getElementById('compra-finalizar').addEventListener('click', finalizarCompra);
+document.getElementById('compra-vaciar').addEventListener('click', () => {
+  if (confirm('¿Vaciar la lista de compra?')) { compra = []; guardarCompra(); pintarCompra(); }
+});
+document.getElementById('btn-modo-compra').addEventListener('click', () => cambiarVista('compra'));
+document.getElementById('accion-compra').addEventListener('click', () => { cerrarHojas(); cambiarVista('compra'); });
+
 function cambiarVista(v){
   vistaActual = v;
-  ['general','pagos','gastos','ingresos','admin'].forEach(x => {
+  ['general','pagos','gastos','ingresos','admin','compra'].forEach(x => {
     document.getElementById('vista-' + x).style.display = x === v ? 'block' : 'none';
   });
   document.querySelectorAll('.drawer nav button[data-vista]').forEach(b =>
     b.classList.toggle('activo', b.dataset.vista === v));
   document.querySelectorAll('.tabbar .tab-item[data-vista]').forEach(b =>
-    b.classList.toggle('activo', b.dataset.vista === v));
+    b.classList.toggle('activo', b.dataset.vista === v || (v === 'compra' && b.dataset.vista === 'gastos')));
   document.getElementById('barra-subtitulo').textContent = SUBTITULOS[v];
   cerrarMenu();
   window.scrollTo({ top: 0 });
   if (v === 'admin') cargarAdminUsuarios();
+  if (v === 'compra') { cargarCompra(); pintarCompra(); }
 }
 document.querySelectorAll('.drawer nav button[data-vista]').forEach(b =>
   b.addEventListener('click', () => cambiarVista(b.dataset.vista)));
@@ -1136,16 +1349,16 @@ function renderIngresos(){
   delMes.forEach(i => { porTipo[i.tipo] = (porTipo[i.tipo]||0) + (i.monto||0); });
   document.getElementById('ingreso-categorias').innerHTML = Object.entries(porTipo)
     .sort((a,b) => b[1]-a[1])
-    .map(([t,v]) => `<span class="cat">${I_ICONOS[t]||'📦'} ${I_NOMBRES[t]||t} · ${plata(v)}</span>`).join('');
+    .map(([t,v]) => `<span class="cat">${I_ICONOS[t]||IC('i-package')} ${I_NOMBRES[t]||t} · ${plata(v)}</span>`).join('');
   document.getElementById('vacio-ingresos').style.display = delMes.length ? 'none' : 'block';
   document.getElementById('lista-ingresos').innerHTML = delMes.map((i, idx) => `
     <div class="pago anim-in" style="--color:#059669; animation-delay:${idx*45}ms">
-      <div class="icono">${I_ICONOS[i.tipo]||'📦'}</div>
+      <div class="icono">${I_ICONOS[i.tipo]||IC('i-package')}</div>
       <div class="info">
         <div class="nombre">${escapar(i.detalle || I_NOMBRES[i.tipo] || 'Ingreso')}</div>
         <div class="cuando">${parseInt(i.fecha.slice(8,10),10)} de ${MESES[parseInt(i.fecha.slice(5,7),10)-1]} · ${I_NOMBRES[i.tipo]||''}</div>
         <div class="acciones">
-          <button class="btn-chico" data-ingreso-borrar="${i.id}">🗑️ Borrar</button>
+          <button class="btn-chico" data-ingreso-borrar="${i.id}"><svg class="ic"><use href="#i-trash"/></svg> Borrar</button>
         </div>
       </div>
       <div class="lado"><div class="monto" style="color:var(--verde)">+ ${plata(i.monto)}</div></div>
@@ -1232,6 +1445,7 @@ document.getElementById('archivo-importar').addEventListener('change', (ev) => {
 let syncTimer = null;
 function pintarNube(enNube){
   const el = document.getElementById('nube-estado');
+  if (!el) return; // v20: el aviso Nube/Local no se muestra en pantalla
   el.textContent = enNube ? '☁️ Nube' : '📱 Local';
   el.classList.toggle('ok', !!enNube);
 }
@@ -1429,21 +1643,21 @@ document.getElementById('admin-lista').addEventListener('click', async (ev) => {
     document.getElementById('admin-detalle-titulo').textContent = datos.usuario.nombre + ' · ' + datos.usuario.correo;
     document.getElementById('admin-detalle-pagos').innerHTML = datos.pagos.length ? datos.pagos.map(p => `
       <div class="mini" style="--color:${p.color || '#6d28d9'}">
-        <div class="icono">${ICONOS[p.tipo] || '🧾'}</div>
+        <div class="icono">${ICONOS[p.tipo] || IC('i-receipt')}</div>
         <div class="info"><div class="nombre">${escapar(p.nombre)}</div>
         <div class="cuando">Día ${p.dia} de cada mes</div></div>
         <div class="monto">${plata(p.monto)}</div>
       </div>`).join('') : '<div class="vacio-seccion">Sin pagos registrados</div>';
     document.getElementById('admin-detalle-gastos').innerHTML = datos.gastos.length ? datos.gastos.slice(0, 20).map(g => `
       <div class="mini" style="--color:#6d28d9">
-        <div class="icono">${G_ICONOS[g.categoria] || '📦'}</div>
+        <div class="icono">${G_ICONOS[g.categoria] || IC('i-package')}</div>
         <div class="info"><div class="nombre">${escapar(g.desc)}</div>
         <div class="cuando">${escapar(g.fecha)} · ${G_NOMBRES[g.categoria] || ''}</div></div>
         <div class="monto">${plata(g.monto)}</div>
       </div>`).join('') : '<div class="vacio-seccion">Sin gastos registrados</div>';
     document.getElementById('admin-detalle-ingresos').innerHTML = (datos.ingresos && datos.ingresos.length) ? datos.ingresos.slice(0, 20).map(i => `
       <div class="mini" style="--color:#059669">
-        <div class="icono">${I_ICONOS[i.tipo] || '📦'}</div>
+        <div class="icono">${I_ICONOS[i.tipo] || IC('i-package')}</div>
         <div class="info"><div class="nombre">${escapar(i.detalle || I_NOMBRES[i.tipo] || 'Ingreso')}</div>
         <div class="cuando">${escapar(i.fecha)} · ${I_NOMBRES[i.tipo] || ''}</div></div>
         <div class="monto">+ ${plata(i.monto)}</div>
