@@ -155,10 +155,24 @@
   .cat-chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
   .cat-chips .cat{background:#f1f2f8; border-radius:99px; padding:6px 12px; font-size:12.5px; font-weight:700}
 
-  /* ---------- Botón flotante ---------- */
-  .fab{position:fixed; right:18px; bottom:22px; width:62px; height:62px; border-radius:50%; border:none;
-    background:linear-gradient(135deg,var(--violeta),var(--rosado)); color:#fff; font-size:31px; cursor:pointer;
-    box-shadow:0 14px 30px rgba(109,40,217,.45); z-index:40}
+  /* ---------- Barra inferior flotante (v14, estilo PropinasApp) ----------
+     Flotante, separada de los bordes y con las esquinas redondeadas:
+     Inicio · Pagos · (+) central elevado · Gastos · Menú (abre el drawer).
+     El + conserva su lógica: agrega según la vista actual. */
+  .tabbar{position:fixed; left:12px; right:12px; bottom:calc(10px + env(safe-area-inset-bottom,0px)); z-index:40;
+    display:flex; align-items:center; justify-content:space-around; max-width:616px; margin:0 auto;
+    background:var(--tarjeta); border:1px solid #e4e4f2; border-radius:26px; box-shadow:0 10px 30px rgba(25,27,41,.18);
+    padding:6px 10px}
+  .tab-item{flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; background:none; border:none;
+    cursor:pointer; color:var(--suave); font-family:inherit; font-size:.62rem; font-weight:700; letter-spacing:.2px; padding:6px 0 3px}
+  .tab-item .tico{font-size:1.1rem; line-height:1}
+  .tab-item.activo{color:var(--violeta)}
+  .tab-mas{flex:0 0 auto; width:56px; height:56px; margin:0 4px; border-radius:50%; border:4px solid var(--fondo);
+    background:linear-gradient(135deg,var(--violeta),var(--rosado)); color:#fff; font-size:30px; cursor:pointer;
+    transform:translateY(-18px); box-shadow:0 14px 30px rgba(109,40,217,.45);
+    display:flex; align-items:center; justify-content:center; line-height:1}
+  .tab-mas:active{transform:translateY(-18px) scale(.95)}
+  html[data-tema="oscuro"] .tabbar{background:#171729; border-color:#2c2c4a}
 
   /* ---------- Hojas inferiores (formularios) ---------- */
   .fondo-modal{display:none; position:fixed; inset:0; background:rgba(20,16,40,.5); z-index:50}
@@ -231,7 +245,7 @@
   .anim-in{animation:aparecer .45s ease both}
   .login-card{animation:aparecer .55s cubic-bezier(.2,.9,.3,1.2) both}
   .login-card .logo{animation:flotar 3.2s ease-in-out infinite}
-  .fab{animation:pulso 2.6s ease-out infinite}
+  .tab-mas{animation:pulso 2.6s ease-out infinite}
   .hoja input:focus,.hoja select:focus,.login-card input:focus{outline:none; border-color:var(--violeta);
     box-shadow:0 0 0 4px rgba(124,58,237,.16); background:#fff}
   button{transition:transform .12s ease, filter .12s ease}
@@ -313,11 +327,10 @@
 </head>
 <body>
 
-<!-- Barra superior -->
+<!-- Barra superior (v14: sin ☰ arriba; el menú se abre desde la barra inferior) -->
 <div class="barra">
-  <button class="btn-menu" id="btn-menu" title="Menú">☰</button>
   <div class="titulo">Mis Pagos<small id="barra-subtitulo">Vista general</small></div>
-  <div class="version">v13</div>
+  <div class="version">v14</div>
   <button id="btn-tema" title="Modo oscuro / claro">🌙</button>
   <div class="nube" id="nube-estado">📱 Local</div>
 </div>
@@ -384,7 +397,7 @@
       </div>
     </div>
   </div>
-  <div class="pie-login">Desarrollado por <strong>Neervison</strong> · Mis Pagos v13 · 2026</div>
+  <div class="pie-login">Desarrollado por <strong>Neervison</strong> · Mis Pagos v14 · 2026</div>
 </div>
 
 <main>
@@ -415,7 +428,7 @@
 
     <div class="stats">
       <div class="stat"><div class="ico">💸</div><div class="val" id="g-stat-gastos">$0</div><div class="lbl">Gastos del mes</div></div>
-      <div class="stat"><div class="ico">💰</div><div class="val" id="g-stat-ingresos">$0</div><div class="lbl">Ingresos del mes</div></div>
+      <div class="stat" data-ir="ingresos" style="cursor:pointer"><div class="ico">💰</div><div class="val" id="g-stat-ingresos">$0</div><div class="lbl">Ingresos del mes</div></div>
       <div class="stat"><div class="ico">⚠️</div><div class="val" id="g-stat-vencidos">0</div><div class="lbl">Vencidos</div></div>
     </div>
 
@@ -518,11 +531,18 @@
   <!-- Pie de página -->
   <footer class="pie">
     <div class="pie-logo">💳 Mis Pagos</div>
-    <div>Desarrollado por <strong>Neervison</strong> · Versión v13 · 2026</div>
+    <div>Desarrollado por <strong>Neervison</strong> · Versión v14 · 2026</div>
   </footer>
 </main>
 
-<button class="fab" id="btn-agregar" title="Agregar">+</button>
+<!-- Barra inferior flotante (v14): el + del centro conserva el id btn-agregar -->
+<nav class="tabbar" id="tabbar" style="display:none">
+  <button class="tab-item" data-vista="general"><span class="tico">🏠</span>Inicio</button>
+  <button class="tab-item" data-vista="pagos"><span class="tico">🧾</span>Pagos</button>
+  <button class="tab-mas" id="btn-agregar" title="Agregar"><span>+</span></button>
+  <button class="tab-item" data-vista="gastos"><span class="tico">💸</span>Gastos</button>
+  <button class="tab-item" id="tab-menu"><span class="tico">☰</span>Menú</button>
+</nav>
 
 <!-- Festejo al marcar un pago como pagado -->
 <div class="festejo" id="festejo" style="display:none">
@@ -970,7 +990,10 @@ function cerrarMenu(){
   document.getElementById('drawer').classList.remove('visible');
   document.getElementById('drawer-fondo').classList.remove('visible');
 }
-document.getElementById('btn-menu').addEventListener('click', abrirMenu);
+/* Barra inferior (v14): las pestañas cambian de vista y Menú abre el drawer */
+document.querySelectorAll('.tabbar .tab-item[data-vista]').forEach(b =>
+  b.addEventListener('click', () => cambiarVista(b.dataset.vista)));
+document.getElementById('tab-menu').addEventListener('click', abrirMenu);
 document.getElementById('drawer-fondo').addEventListener('click', cerrarMenu);
 
 /* ---------- 🌙 Modo oscuro (la preferencia queda guardada) ---------- */
@@ -993,6 +1016,8 @@ function cambiarVista(v){
     document.getElementById('vista-' + x).style.display = x === v ? 'block' : 'none';
   });
   document.querySelectorAll('.drawer nav button[data-vista]').forEach(b =>
+    b.classList.toggle('activo', b.dataset.vista === v));
+  document.querySelectorAll('.tabbar .tab-item[data-vista]').forEach(b =>
     b.classList.toggle('activo', b.dataset.vista === v));
   document.getElementById('barra-subtitulo').textContent = SUBTITULOS[v];
   cerrarMenu();
@@ -1269,6 +1294,7 @@ function mostrarLogin(){
   document.getElementById('pantalla-login').style.display = 'flex';
   document.querySelector('.barra').style.display = 'none';
   document.querySelector('main').style.display = 'none';
+  document.getElementById('tabbar').style.display = 'none';
   document.getElementById('btn-agregar').style.display = 'none';
 }
 function mostrarApp(){
@@ -1276,7 +1302,8 @@ function mostrarApp(){
   document.getElementById('pantalla-login').style.display = 'none';
   document.querySelector('.barra').style.display = 'flex';
   document.querySelector('main').style.display = 'block';
-  document.getElementById('btn-agregar').style.display = 'block';
+  document.getElementById('tabbar').style.display = 'flex';
+  document.getElementById('btn-agregar').style.display = 'flex';
   document.getElementById('drawer-usuario').textContent =
     (sesion.usuario.rol === 'admin' ? '👑 ' : '👤 ') + sesion.usuario.nombre + ' · ' + sesion.usuario.correo;
   document.getElementById('nav-admin').style.display = sesion.usuario.rol === 'admin' ? 'flex' : 'none';
