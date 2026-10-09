@@ -59,6 +59,11 @@ quedan en el teléfono y sincronizan cuando vuelve), pero ese estado
   de PropinasApp): Inicio, Pagos, el **+** al centro elevado, Gastos y Menú.
   El menú lateral se abre desde esa barra; la barra superior ya no lleva ☰.
   Ingresos se entra desde el menú o tocando su tarjeta en la Vista general.
+- **Íconos de pagos visibles en oscuro (v25)**: los símbolos de las filas
+  de pagos/gastos heredaban el color del texto (casi blanco en oscuro) y se
+  perdían sobre su fondo pastel; ahora cada ícono usa el color propio del
+  pago (`color:var(--color)`), visible en ambos temas. (La v24 quitó el
+  subtítulo "Vista general" de la barra superior.)
 - **Sol visible y letras legibles (v23)**: el botón de tema heredaba color
   negro y en modo oscuro el sol se pintaba negro sobre negro (invisible);
   ahora usa el color del texto del tema. Tipografía con mejor contraste
