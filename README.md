@@ -59,6 +59,11 @@ quedan en el teléfono y sincronizan cuando vuelve), pero ese estado
   de PropinasApp): Inicio, Pagos, el **+** al centro elevado, Gastos y Menú.
   El menú lateral se abre desde esa barra; la barra superior ya no lleva ☰.
   Ingresos se entra desde el menú o tocando su tarjeta en la Vista general.
+- **Sol visible y letras legibles (v23)**: el botón de tema heredaba color
+  negro y en modo oscuro el sol se pintaba negro sobre negro (invisible);
+  ahora usa el color del texto del tema. Tipografía con mejor contraste
+  (`--suave` más marcado en ambos temas), textos secundarios un poco más
+  grandes y renderizado suavizado (antialiased).
 - **Modo compra (v22)**: desde Gastos o desde el botón **+** ("Compra en
   el mercado"). Anotas producto, precio y cantidad mientras compras y la
   app lleva la **suma en vivo** ("Llevas en esta compra $…"), con la lista
