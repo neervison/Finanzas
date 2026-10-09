@@ -18,7 +18,7 @@
      Vistas: General (panel) · Pagos · Gastos, con menú ☰ lateral.
      ============================================================ */
   :root{
-    --fondo:#eef0f8; --tarjeta:#ffffff; --texto:#191b29; --suave:#6b7086;
+    --fondo:#eef0f8; --tarjeta:#ffffff; --texto:#191b29; --suave:#585d75;
     --violeta:#6d28d9; --morado:#5b21b6; --rosado:#db2777;
     --verde:#16a34a; --ambar:#d97706; --rojo:#dc2626; --celeste:#0284c7;
     --sombra:0 10px 30px rgba(25,27,41,.09);
@@ -337,7 +337,7 @@
   .festejo-txt{color:#fff; font-size:22px; font-weight:900; margin-top:12px; text-shadow:0 2px 12px rgba(0,0,0,.4)}
 
   /* ---------- 🌙 Modo oscuro ---------- */
-  html[data-tema="oscuro"]{--fondo:#0e0e1a; --texto:#f2f1fa; --suave:#a3a1c2}
+  html[data-tema="oscuro"]{--fondo:#0e0e1a; --texto:#f2f1fa; --suave:#b8b6d4}
   html[data-tema="oscuro"] .barra{background:rgba(14,14,26,.92); box-shadow:0 4px 18px rgba(0,0,0,.5)}
   html[data-tema="oscuro"] .stat, html[data-tema="oscuro"] .pago, html[data-tema="oscuro"] .mini,
   html[data-tema="oscuro"] .balance, html[data-tema="oscuro"] .gasto-resumen, html[data-tema="oscuro"] .grafico,
@@ -377,6 +377,18 @@
   .cat .ic{width:14px; height:14px; vertical-align:-2px}
   .balance .lbl .ic{width:18px; height:18px; vertical-align:-3px}
   #admin-restablecer .ic{width:16px; height:16px; vertical-align:-3px}
+
+  /* ---------- Sol visible en oscuro + letras más legibles (v23) ---------- */
+  /* El botón del tema heredaba negro: en modo oscuro el sol se pintaba negro sobre negro */
+  #btn-tema{color:var(--texto)}
+  body{-webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility}
+  .subtitulo-vista{font-size:13.5px; font-weight:600}
+  .mini .cuando{font-size:12.5px}
+  .pago .cuando{font-size:13px}
+  .stat .lbl{font-size:12px}
+  .saludo .fecha{font-size:14px}
+  .drawer nav button{font-size:15.5px}
+  .tab-item{font-size:11.5px; font-weight:700}
 
   /* ---------- Modo compra (v22): lista con suma en vivo ---------- */
   .compra-total{background:linear-gradient(135deg,var(--violeta),var(--rosado)); color:#fff; border-radius:20px; padding:18px; text-align:center; box-shadow:var(--sombra-suave); margin-top:6px}
@@ -449,7 +461,8 @@
 <!-- Barra superior (v14: sin ☰ arriba; el menú se abre desde la barra inferior) -->
 <div class="barra">
   <div class="logo-chip"><img src="icon-192.png" alt="Mis Pagos"></div>
-  <div class="titulo">Mis Pagos<small id="barra-subtitulo">Vista general</small></div>
+  <div class="titulo">Mis Pagos</div>
+  <!-- v24: sin subtítulo de la vista bajo "Mis Pagos" (a pedido de Neervison) -->
   <!-- v17: sin chip de versión en pantalla (a pedido de Neervison) -->
   <button id="btn-tema" title="Modo oscuro / claro"><svg class="ic"><use href="#i-moon"/></svg></button>
   <!-- v20: sin aviso "Nube / Local" en pantalla; la barra NO va centrada (queda como estaba, a la izquierda) -->
@@ -1231,7 +1244,8 @@ function cambiarVista(v){
     b.classList.toggle('activo', b.dataset.vista === v));
   document.querySelectorAll('.tabbar .tab-item[data-vista]').forEach(b =>
     b.classList.toggle('activo', b.dataset.vista === v || (v === 'compra' && b.dataset.vista === 'gastos')));
-  document.getElementById('barra-subtitulo').textContent = SUBTITULOS[v];
+  const subEl = document.getElementById('barra-subtitulo'); // v24: el subtítulo ya no existe en la barra
+  if (subEl) subEl.textContent = SUBTITULOS[v];
   cerrarMenu();
   window.scrollTo({ top: 0 });
   if (v === 'admin') cargarAdminUsuarios();
