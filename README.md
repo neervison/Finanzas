@@ -41,8 +41,9 @@ Producción actual: https://finanzas-6gax.onrender.com
 ## Instalarla en el teléfono
 
 Abre la dirección en Chrome → menú ⋮ → **Instalar app**. Queda el ícono
-junto a tus apps. Arriba a la derecha verás **☁️ Nube** cuando guarda en el
-servidor, o **📱 Local** sin conexión (sincroniza cuando vuelve).
+junto a tus apps. Los datos se guardan solos en el servidor (sin conexión
+quedan en el teléfono y sincronizan cuando vuelve), pero ese estado
+**no se muestra en pantalla**: ni ☁️ Nube ni 📱 Local, y tampoco la versión.
 
 ## Uso diario
 
@@ -58,11 +59,33 @@ servidor, o **📱 Local** sin conexión (sincroniza cuando vuelve).
   de PropinasApp): Inicio, Pagos, el **+** al centro elevado, Gastos y Menú.
   El menú lateral se abre desde esa barra; la barra superior ya no lleva ☰.
   Ingresos se entra desde el menú o tocando su tarjeta en la Vista general.
+- **Modo compra (v22)**: desde Gastos o desde el botón **+** ("Compra en
+  el mercado"). Anotas producto, precio y cantidad mientras compras y la
+  app lleva la **suma en vivo** ("Llevas en esta compra $…"), con la lista
+  guardada en el teléfono por si cierras la app. Al terminar, **Finalizar**
+  guarda el total como un gasto de Supermercado en Gastos del mes (con
+  "Compra en el mercado (N productos)") y la lista se vacía. Las tarjetas
+  de la Vista general y los íconos de las listas se agrandaron un poco.
+- **Íconos profesionales (v21)**: toda la app usa íconos SVG de trazo
+  (sprite `#i-*` al inicio del body, helper JS `IC('i-...')`, clase `.ic`):
+  barra inferior, menú lateral, tarjetas, listas, categorías y formularios.
+  Ya no quedan emojis como íconos; las opciones de los selectores van con
+  texto solo. Los ✓ de "Ya pagué/Pagado" se mantienen como glifo.
+- **Logo oficial (v16)**: gráfico de barras pastel que suben con flecha
+  dorada ("Finanzas que suben"). Es el ícono de instalación
+  (`icon-192.png` / `icon-512.png`) y aparece en la barra superior, el menú
+  lateral, la pantalla de ingreso y los pies de página (antes era un 💳).
+  El fondo de la app es sereno, sin manchas; el panel general entra en
+  cascada, los montos de las tarjetas cuentan al abrir, un brillo cruza el
+  resumen, el anillo de progreso se llena con movimiento y la pestaña activa
+  de la barra inferior se marca con una píldora.
 - **Toques v7**: saludo personal según la hora ("Buenas tardes, [nombre]"),
   gráfico de barras ingresos vs gastos de los últimos 6 meses, animación
   de check al marcar un pago como pagado, botón 🌙 de **modo oscuro** en
   la barra superior (la preferencia queda guardada en el teléfono) y
-  footer con el desarrollador y la versión.
+  footer con el desarrollador. La versión **no se muestra en pantalla**
+  (sin chip en la barra ni en los pies, a pedido de Neervison); internamente
+  el service worker sigue versionando la caché (`mispagos-v17`).
 
 ## Probarla en el PC (sin nube)
 
