@@ -59,6 +59,22 @@ quedan en el teléfono y sincronizan cuando vuelve), pero ese estado
   de PropinasApp): Inicio, Pagos, el **+** al centro elevado, Gastos y Menú.
   El menú lateral se abre desde esa barra; la barra superior ya no lleva ☰.
   Ingresos se entra desde el menú o tocando su tarjeta en la Vista general.
+- **Orden y dinamismo (v28)**: Pagos se agrupa con títulos **Vencidos ·
+  Por vencer · Pagados**; **buscador** en Pagos y en Gastos (filtra al
+  escribir, sin tocar los totales del mes); **deslizar un pago a la
+  derecha lo marca "Ya pagué"** (con vibración, igual que el botón);
+  transición suave al cambiar de vista; y el **gráfico es tocable**:
+  tocar un mes salta a los gastos e ingresos de ese mes.
+- **Cerrar la app cierra la sesión (v27)**: la sesión ahora vive en
+  sessionStorage — al cerrar la app por completo, al volver a abrir pide
+  correo y clave de nuevo (a pedido del dueño). Si solo se minimiza, la
+  sesión sigue. Los datos (pagos, gastos, ingresos y la lista de compra)
+  NO se borran: quedan guardados como siempre.
+- **Suma siempre visible en Modo Compra (v26)**: la suma grande quedaba
+  arriba y se perdía de vista al agregar productos; ahora hay una **barra
+  fija** sobre la barra inferior con "Llevas en esta compra $…" y botón
+  Finalizar, visible todo el rato (también con el teclado abierto, gracias
+  a `interactive-widget=resizes-content` en el viewport).
 - **Íconos de pagos visibles en oscuro (v25)**: los símbolos de las filas
   de pagos/gastos heredaban el color del texto (casi blanco en oscuro) y se
   perdían sobre su fondo pastel; ahora cada ícono usa el color propio del
