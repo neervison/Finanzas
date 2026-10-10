@@ -59,6 +59,12 @@ quedan en el teléfono y sincronizan cuando vuelve), pero ese estado
   de PropinasApp): Inicio, Pagos, el **+** al centro elevado, Gastos y Menú.
   El menú lateral se abre desde esa barra; la barra superior ya no lleva ☰.
   Ingresos se entra desde el menú o tocando su tarjeta en la Vista general.
+- **Diseño profesional (v29)**: tipografía de diseñador — **Sora** en
+  títulos y montos grandes, **Inter** en el texto (Google Fonts, con
+  respaldo del sistema si no hay conexión); montos con cifras tabulares
+  (se alinean como en una app de banco); tarjetas con borde fino además
+  de la sombra (en claro y en oscuro); más aire en los márgenes; botones
+  con respuesta al tacto (se hunden levemente al tocarlos).
 - **Orden y dinamismo (v28)**: Pagos se agrupa con títulos **Vencidos ·
   Por vencer · Pagados**; **buscador** en Pagos y en Gastos (filtra al
   escribir, sin tocar los totales del mes); **deslizar un pago a la
