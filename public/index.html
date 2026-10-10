@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <meta name="theme-color" content="#5b21b6">
 <title>Mis Pagos — Recordatorio de tarjetas y cuentas</title>
 <script>try{ if (localStorage.getItem('mispagos_tema') === 'oscuro') document.documentElement.dataset.tema = 'oscuro'; }catch(e){}</script>
@@ -381,6 +381,16 @@
   /* ---------- Sol visible en oscuro + letras más legibles (v23) ---------- */
   /* El botón del tema heredaba negro: en modo oscuro el sol se pintaba negro sobre negro */
   #btn-tema{color:var(--texto)}
+
+  /* ---------- Mejoras v28: orden y dinamismo ---------- */
+  @keyframes vistaEntra{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
+  section.entra{animation:vistaEntra .3s ease both}
+  .buscador{width:100%; padding:12px 14px; border:1.5px solid #e6e1f2; border-radius:12px; font-size:15px; background:var(--tarjeta); color:var(--texto); margin-top:12px}
+  .grupo-tit{display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:900; letter-spacing:.8px; text-transform:uppercase; color:var(--suave); margin:18px 2px 0}
+  .grupo-tit span{background:#ede9fe; color:var(--morado); border-radius:99px; padding:1px 8px; font-size:11.5px; letter-spacing:0}
+  html[data-tema="oscuro"] .grupo-tit span{background:#2c2c4a; color:#c4b5fd}
+  .grafico .col{cursor:pointer}
+  .pago[data-pago-id]{touch-action:pan-y}
   body{-webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility}
   .subtitulo-vista{font-size:13.5px; font-weight:600}
   .mini .cuando{font-size:12.5px}
@@ -411,6 +421,13 @@
   .btn-finalizar{border:none; border-radius:14px; background:#16a34a; color:#fff; font-weight:800; font-size:15.5px; padding:14px; cursor:pointer}
   .btn-vaciar{border:none; border-radius:14px; background:#f1f2f8; color:var(--suave); font-weight:700; font-size:14px; padding:12px; cursor:pointer}
   .btn-modo-compra{display:flex; align-items:center; gap:9px; width:100%; border:none; border-radius:14px; background:#ede9fe; color:var(--morado); font-weight:800; font-size:15px; padding:13px 15px; cursor:pointer; margin-top:12px}
+  /* Barra fija con la suma, siempre visible mientras compras (v26) */
+  #vista-compra{padding-bottom:84px}
+  .compra-barra-fija{position:fixed; left:12px; right:12px; bottom:calc(96px + env(safe-area-inset-bottom)); z-index:40; display:none; align-items:center; gap:10px; background:linear-gradient(135deg,var(--violeta),var(--rosado)); color:#fff; border-radius:16px; padding:12px 14px; box-shadow:0 12px 28px rgba(91,33,182,.35)}
+  .compra-barra-fija .t{flex:1; min-width:0}
+  .compra-barra-fija .t small{display:block; font-size:11px; font-weight:700; opacity:.85}
+  .compra-barra-fija .t b{font-size:21px; font-weight:900}
+  .compra-barra-fija button{border:none; background:#fff; color:var(--morado); font-weight:800; font-size:14px; border-radius:11px; padding:10px 13px; cursor:pointer}
 </style>
 </head>
 <body>
@@ -588,6 +605,7 @@
     <h2 class="titulo-vista"><svg class="ic"><use href="#i-receipt"/></svg> Pagos</h2>
     <p class="subtitulo-vista">Tus tarjetas, servicios y cuentas de cada mes</p>
     <div class="alerta" id="alerta-pagos"></div>
+    <input class="buscador" id="buscar-pagos" type="search" placeholder="Buscar un pago…" autocomplete="off">
     <div class="filtros">
       <button id="filtro-todos" class="activo">Todos</button>
       <button id="filtro-pendientes">Por pagar</button>
@@ -605,6 +623,7 @@
   <section id="vista-gastos" style="display:none">
     <h2 class="titulo-vista"><svg class="ic"><use href="#i-wallet"/></svg> Gastos del mes</h2>
     <p class="subtitulo-vista">Lo que vas gastando, anotado al momento</p>
+    <input class="buscador" id="buscar-gastos" type="search" placeholder="Buscar un gasto…" autocomplete="off">
     <div class="mes-nav">
       <button id="gasto-mes-prev">‹</button>
       <div class="mes-label" id="gasto-mes-label"></div>
@@ -706,6 +725,12 @@
   <button class="tab-item" data-vista="gastos"><span class="tico"><svg class="ic"><use href="#i-wallet"/></svg></span>Gastos</button>
   <button class="tab-item" id="tab-menu"><span class="tico"><svg class="ic"><use href="#i-menu"/></svg></span>Menú</button>
 </nav>
+
+<!-- Barra fija de la suma en Modo Compra (v26): siempre visible al agregar productos -->
+<div class="compra-barra-fija" id="compra-barra-fija">
+  <div class="t"><small>LLEVAS EN ESTA COMPRA</small><b id="compra-total-fijo">$0</b></div>
+  <button type="button" id="compra-finalizar-fijo">Finalizar</button>
+</div>
 
 <!-- Festejo al marcar un pago como pagado -->
 <div class="festejo" id="festejo" style="display:none">
@@ -816,7 +841,12 @@
    ============================================================ */
 const CLAVE_SESION = 'mispagos_sesion_v1';
 let sesion = null;
-try { sesion = JSON.parse(localStorage.getItem(CLAVE_SESION)) || null; } catch(e) { sesion = null; }
+// v27: la sesión vive en sessionStorage — al cerrar la app se cierra la
+// sesión y al volver a abrir pide la clave de nuevo (a pedido de Neervison).
+// Los DATOS (pagos, gastos, ingresos, lista de compra) siguen guardados.
+try { sesion = JSON.parse(sessionStorage.getItem(CLAVE_SESION)) || null; } catch(e) { sesion = null; }
+try { localStorage.removeItem(CLAVE_SESION); } catch(e) {}
+function borrarSesion(){ try { sessionStorage.removeItem(CLAVE_SESION); } catch(e) {} try { localStorage.removeItem(CLAVE_SESION); } catch(e) {} }
 // Los datos en caché se guardan por usuario (su id va en la clave),
 // para que dos personas en el mismo teléfono no se mezclen.
 function clavePagos(){ return 'mispagos_v1_' + (sesion ? sesion.usuario.id : 'anon'); }
@@ -832,6 +862,7 @@ let editandoId = null;
 let colorElegido = '#6d28d9';
 let vistaActual = 'general';     // general | pagos | gastos
 let mesVer = claveMesActual();
+let textoBusquedaGastos = '';
 
 const COLORES = ['#6d28d9','#2563eb','#059669','#dc2626','#ea580c','#db2777','#0891b2','#111827'];
 const IC = id => '<svg class="ic"><use href="#' + id + '"/></svg>';
@@ -1011,7 +1042,7 @@ function renderGeneral(){
   }));
   const maxSerie = Math.max(1, ...serie.map(s => Math.max(s.ing, s.gas)));
   document.getElementById('g-grafico').innerHTML = serie.map(s => `
-    <div class="col">
+    <div class="col" data-mes="${s.mes}">
       <div class="vals">
         <span class="v ing">${s.ing ? plataCorta(s.ing) : ''}</span>
         <span class="v gas">${s.gas ? plataCorta(s.gas) : ''}</span>
@@ -1060,13 +1091,16 @@ function renderGeneral(){
 }
 
 /* ---------- VISTA PAGOS ---------- */
+let textoBusqueda = '';
+let ultimoSwipe = 0;
 function renderPagos(){
   const conEstado = pagosConEstado();
-  const visibles = conEstado.filter(x =>
+  let visibles = conEstado.filter(x =>
     filtro === 'todos' || (filtro === 'pendientes' && x.e.estado !== 'pagado') || (filtro === 'pagados' && x.e.estado === 'pagado'));
+  if (textoBusqueda) visibles = visibles.filter(x => (x.pago.nombre || '').toLowerCase().includes(textoBusqueda));
   document.getElementById('vacio').style.display = pagos.length === 0 ? 'block' : 'none';
-  document.getElementById('lista').innerHTML = visibles.map(({pago:p, e}, idx) => `
-    <div class="pago anim-in" style="--color:${p.color}; animation-delay:${idx*45}ms">
+  const fila = ({pago:p, e}, idx) => `
+    <div class="pago anim-in" data-pago-id="${p.id}" style="--color:${p.color}; animation-delay:${idx*45}ms">
       <div class="icono">${ICONOS[p.tipo] || IC('i-receipt')}</div>
       <div class="info">
         <div class="nombre">${escapar(p.nombre)}</div>
@@ -1081,9 +1115,26 @@ function renderPagos(){
         <div class="monto">${plata(p.monto)}</div>
         <div class="chip ${e.estado}">${textoChip(e)}</div>
       </div>
-    </div>`).join('');
+    </div>`;
+  const lista = document.getElementById('lista');
+  if (filtro === 'todos' && !textoBusqueda && visibles.length){
+    // v28: agrupado por estado, con títulos (Vencidos · Por vencer · Pagados)
+    const grupos = [
+      ['Vencidos', visibles.filter(x => x.e.estado === 'vencido')],
+      ['Por vencer', visibles.filter(x => x.e.estado !== 'vencido' && x.e.estado !== 'pagado')],
+      ['Pagados', visibles.filter(x => x.e.estado === 'pagado')]
+    ];
+    let idx = 0;
+    lista.innerHTML = grupos.filter(g => g[1].length)
+      .map(([tit, items]) => `<div class="grupo-tit">${tit}<span>${items.length}</span></div>` + items.map(x => fila(x, idx++)).join(''))
+      .join('');
+  } else {
+    lista.innerHTML = visibles.length ? visibles.map(fila).join('')
+      : '<div class="vacio-seccion">Sin resultados para tu búsqueda.</div>';
+  }
 }
 document.getElementById('lista').addEventListener('click', (ev) => {
+  if (Date.now() - ultimoSwipe < 400) return; // el toque fue un deslizamiento, no un clic
   const btn = ev.target.closest('button[data-accion]');
   if (!btn || btn.disabled) return;
   const pago = pagos.find(p => p.id === btn.dataset.id);
@@ -1091,6 +1142,7 @@ document.getElementById('lista').addEventListener('click', (ev) => {
   if (btn.dataset.accion === 'pagar'){
     pago.pagadoClave = claveDe(vencimientoEn(pago, new Date()));
     guardarPagos(); renderTodo(); festejarPago(pago.nombre);
+    if (navigator.vibrate) navigator.vibrate(25);
   }
   if (btn.dataset.accion === 'editar') abrirFormulario(pago);
   if (btn.dataset.accion === 'borrar'){
@@ -1100,6 +1152,61 @@ document.getElementById('lista').addEventListener('click', (ev) => {
     }
   }
 });
+
+/* ---------- v28: deslizar un pago a la derecha = "Ya pagué" ---------- */
+(function(){
+  const lista = document.getElementById('lista');
+  let sx = 0, sy = 0, el = null, id = null, movio = false;
+  lista.addEventListener('touchstart', e => {
+    const card = e.target.closest('.pago[data-pago-id]');
+    if (!card) return;
+    const p = pagos.find(x => x.id === card.dataset.pagoId);
+    if (!p || estadoDe(p).estado === 'pagado') return;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; el = card; id = p.id; movio = false;
+  }, { passive:true });
+  lista.addEventListener('touchmove', e => {
+    if (!el) return;
+    const dx = e.touches[0].clientX - sx, dy = e.touches[0].clientY - sy;
+    if (Math.abs(dy) > Math.abs(dx)) { el.style.transform = ''; el = null; return; } // era scroll vertical
+    if (dx > 8) {
+      movio = true;
+      el.style.transition = 'none';
+      el.style.transform = 'translateX(' + Math.min(dx, 130) + 'px)';
+      el.style.opacity = dx > 80 ? '.5' : '1';
+    }
+  }, { passive:true });
+  lista.addEventListener('touchend', e => {
+    if (!el) return;
+    const dx = e.changedTouches[0].clientX - sx;
+    el.style.transition = 'transform .25s ease, opacity .25s ease';
+    el.style.transform = ''; el.style.opacity = '';
+    if (movio && dx > 80) {
+      ultimoSwipe = Date.now();
+      const pago = pagos.find(x => x.id === id);
+      if (pago) {
+        pago.pagadoClave = claveDe(vencimientoEn(pago, new Date()));
+        guardarPagos(); renderTodo(); festejarPago(pago.nombre);
+        if (navigator.vibrate) navigator.vibrate(30);
+      }
+    }
+    el = null;
+  });
+})();
+
+/* ---------- v28: buscadores de Pagos y Gastos ---------- */
+document.getElementById('buscar-pagos').addEventListener('input', e => { textoBusqueda = e.target.value.trim().toLowerCase(); renderPagos(); });
+document.getElementById('buscar-gastos').addEventListener('input', e => { textoBusquedaGastos = e.target.value.trim().toLowerCase(); renderGastos(); });
+
+/* ---------- v28: tocar un mes del gráfico salta a ese mes ---------- */
+document.getElementById('g-grafico').addEventListener('click', e => {
+  const col = e.target.closest('.col[data-mes]');
+  if (!col) return;
+  mesVer = col.dataset.mes;
+  mesVerIng = col.dataset.mes;
+  renderGastos(); renderIngresos();
+  cambiarVista('gastos');
+});
+
 [['filtro-todos','todos'],['filtro-pendientes','pendientes'],['filtro-pagados','pagados']].forEach(([id, f]) => {
   document.getElementById(id).addEventListener('click', () => {
     filtro = f;
@@ -1126,7 +1233,8 @@ function renderGastos(){
     .sort((a,b) => b[1]-a[1])
     .map(([c,v]) => `<span class="cat">${G_ICONOS[c]||IC('i-package')} ${G_NOMBRES[c]||c} · ${plata(v)}</span>`).join('');
   document.getElementById('vacio-gastos').style.display = delMes.length ? 'none' : 'block';
-  document.getElementById('lista-gastos').innerHTML = delMes.map((g, idx) => `
+  const listaG = textoBusquedaGastos ? delMes.filter(g => (g.desc || '').toLowerCase().includes(textoBusquedaGastos) || (G_NOMBRES[g.categoria] || '').toLowerCase().includes(textoBusquedaGastos)) : delMes;
+  document.getElementById('lista-gastos').innerHTML = listaG.length ? listaG.map((g, idx) => `
     <div class="pago anim-in" style="--color:#6d28d9; animation-delay:${idx*45}ms">
       <div class="icono">${G_ICONOS[g.categoria]||IC('i-package')}</div>
       <div class="info">
@@ -1137,7 +1245,7 @@ function renderGastos(){
         </div>
       </div>
       <div class="lado"><div class="monto">${plata(g.monto)}</div></div>
-    </div>`).join('');
+    </div>`).join('') : '<div class="vacio-seccion">Sin resultados para tu búsqueda.</div>';
 }
 document.getElementById('lista-gastos').addEventListener('click', (ev) => {
   const btn = ev.target.closest('button[data-gasto-borrar]'); if (!btn) return;
@@ -1184,6 +1292,10 @@ function totalCompra(){ return compra.reduce((a,i) => a + (i.precio||0) * (i.can
 function pintarCompra(){
   const n = compra.reduce((a,i) => a + (i.cant||1), 0);
   document.getElementById('compra-total').textContent = plata(totalCompra());
+  const fijo = document.getElementById('compra-total-fijo');
+  if (fijo) fijo.textContent = plata(totalCompra());
+  const barra = document.getElementById('compra-barra-fija');
+  if (barra) barra.style.display = (typeof vistaActual !== 'undefined' && vistaActual === 'compra') ? 'flex' : 'none';
   document.getElementById('compra-detalle').textContent = compra.length === 0 ? '0 productos'
     : n + (n===1 ? ' producto' : ' productos') + ' en ' + compra.length + (compra.length===1 ? ' ítem' : ' ítems');
   document.getElementById('vacio-compra').style.display = compra.length ? 'none' : 'block';
@@ -1229,6 +1341,7 @@ document.getElementById('lista-compra').addEventListener('click', e => {
   guardarCompra(); pintarCompra();
 });
 document.getElementById('compra-finalizar').addEventListener('click', finalizarCompra);
+document.getElementById('compra-finalizar-fijo').addEventListener('click', finalizarCompra);
 document.getElementById('compra-vaciar').addEventListener('click', () => {
   if (confirm('¿Vaciar la lista de compra?')) { compra = []; guardarCompra(); pintarCompra(); }
 });
@@ -1244,12 +1357,16 @@ function cambiarVista(v){
     b.classList.toggle('activo', b.dataset.vista === v));
   document.querySelectorAll('.tabbar .tab-item[data-vista]').forEach(b =>
     b.classList.toggle('activo', b.dataset.vista === v || (v === 'compra' && b.dataset.vista === 'gastos')));
+  const sec = document.getElementById('vista-' + v);
+  if (sec) { sec.classList.remove('entra'); void sec.offsetWidth; sec.classList.add('entra'); }
   const subEl = document.getElementById('barra-subtitulo'); // v24: el subtítulo ya no existe en la barra
   if (subEl) subEl.textContent = SUBTITULOS[v];
   cerrarMenu();
   window.scrollTo({ top: 0 });
   if (v === 'admin') cargarAdminUsuarios();
   if (v === 'compra') { cargarCompra(); pintarCompra(); }
+  const bf = document.getElementById('compra-barra-fija');
+  if (bf && v !== 'compra') bf.style.display = 'none';
 }
 document.querySelectorAll('.drawer nav button[data-vista]').forEach(b =>
   b.addEventListener('click', () => cambiarVista(b.dataset.vista)));
@@ -1468,7 +1585,7 @@ function programarSync(){
   syncTimer = setTimeout(sincronizar, 700);
 }
 function sesionExpirada(){
-  localStorage.removeItem(CLAVE_SESION);
+  borrarSesion();
   location.reload();
 }
 async function sincronizar(){
@@ -1550,7 +1667,7 @@ async function pedir(ruta, opciones){
 }
 function entrarCon(data){
   sesion = { token: data.token, usuario: data.usuario };
-  localStorage.setItem(CLAVE_SESION, JSON.stringify(sesion));
+  try { sessionStorage.setItem(CLAVE_SESION, JSON.stringify(sesion)); } catch(e) {}
   pagos = cargarPagos();       // caché propio de este usuario
   gastos = cargarGastos();
   ingresos = cargarIngresos();
@@ -1618,7 +1735,7 @@ document.getElementById('reg-clave').addEventListener('keydown', (e) => { if (e.
 document.getElementById('nav-salir').addEventListener('click', async () => {
   cerrarMenu();
   if (sesion) await fetch('/api/logout', { method:'POST', headers: authHeaders() }).catch(() => {});
-  localStorage.removeItem(CLAVE_SESION);
+  borrarSesion();
   location.reload();
 });
 
