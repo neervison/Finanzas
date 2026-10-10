@@ -7,6 +7,9 @@
 <title>Mis Pagos — Recordatorio de tarjetas y cuentas</title>
 <script>try{ if (localStorage.getItem('mispagos_tema') === 'oscuro') document.documentElement.dataset.tema = 'oscuro'; }catch(e){}</script>
 <link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -391,6 +394,25 @@
   html[data-tema="oscuro"] .grupo-tit span{background:#2c2c4a; color:#c4b5fd}
   .grafico .col{cursor:pointer}
   .pago[data-pago-id]{touch-action:pan-y}
+
+  /* ---------- Diseño profesional (v29) ---------- */
+  .barra .titulo, .titulo-vista, .saludo .hola, .hero .monto, .stat .val,
+  .compra-total .monto, .gasto-resumen .total, .login-card h1, .compra-barra-fija .t b{
+    font-family:'Sora','Inter','Segoe UI',sans-serif; letter-spacing:-.02em}
+  .titulo-vista{font-size:22px; margin-top:24px}
+  .hero .monto{font-size:36px}
+  .hero{box-shadow:0 16px 34px rgba(109,40,217,.28)}
+  main{padding:0 18px}
+  .stat .val, .pago .monto, .mini .monto, .gasto-resumen .total, .compra-item .sub{font-variant-numeric:tabular-nums}
+  .pago, .mini, .stat, .grafico, .balance, .gasto-resumen, .compra-form, .compra-item, .vacio-seccion{border:1px solid rgba(23,23,43,.05)}
+  html[data-tema="oscuro"] .pago, html[data-tema="oscuro"] .mini, html[data-tema="oscuro"] .stat,
+  html[data-tema="oscuro"] .grafico, html[data-tema="oscuro"] .balance, html[data-tema="oscuro"] .gasto-resumen,
+  html[data-tema="oscuro"] .compra-form, html[data-tema="oscuro"] .compra-item, html[data-tema="oscuro"] .vacio-seccion{border-color:rgba(255,255,255,.07)}
+  button{transition:transform .12s ease}
+  button:active{transform:scale(.96)}
+  .tab-mas:active{transform:translateY(-18px) scale(.93)}
+  .drawer nav button:active{transform:none}
+  .accion-btn:active{transform:scale(.99)}
   body{-webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility}
   .subtitulo-vista{font-size:13.5px; font-weight:600}
   .mini .cuando{font-size:12.5px}
